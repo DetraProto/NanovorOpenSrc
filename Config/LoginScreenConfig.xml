@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<config>
+
+	<connect protocolversion="1.0"
+			 appkey="DEQDE-SSFFD-RTEWF-9SDWQ"
+			 sequencenumber="1"
+			 majorversion="1"
+			 minorversion="2"
+			 buildversion="0"
+			 osname="Vista"
+			 osversion="SP1"
+			 ostype="64-bit"
+			 playername="root"
+			 playerpassword="root"
+			 locale="en-US"
+			 service="Nanovor" />
+
+</config>

@@ -1,0 +1,11 @@
+<WebClientSettings>
+  <hooks>
+    <hook name="account-creation" url="http://127.0.0.1:8443/manifests/register.php" type="external" token="false" />
+    <hook name="password-reset" url="http://127.0.0.1:8443/manifests/password_request.php" type="external" token="false"/>
+    <hook name="password-change" url="http://127.0.0.1:8443/manifests/account" type="external" token="false"/>
+    <hook name="nanolog" url="http://127.0.0.1:8443/manifests/nanolog" type="external" token="false"/>
+    <hook name="news" url="http://127.0.0.1:8443/manifests/news" type="internal" token="false"/>
+    <hook name="news-banner" url="http://127.0.0.1:8443/Assets/Client/NewsBanner.swf" type="swf" token="false"/>
+    <hook name="buy-nanocash" url="http://127.0.0.1:8443/manifests/nanocash.php" type="internal" token="true"/>
+  </hooks>
+</WebClientSettings>

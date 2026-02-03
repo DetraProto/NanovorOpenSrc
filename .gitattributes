@@ -1,0 +1,3 @@
+# Use LF for all text files so the repo is consistent across all platforms.
+# Stops Git from converting to CRLF.
+* text=auto eol=lf
