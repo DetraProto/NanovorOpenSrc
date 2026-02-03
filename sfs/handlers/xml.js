@@ -22,9 +22,10 @@ function handleXmlMessage(socket, message) {
         // Safely extract the action from the XML
         let action = null;
         let body = null;
+        let msg = null;
 
         try {
-            const msg = result.msg;
+            msg = result.msg;
             console.log(`DEBUG: XML message structure - msg exists: ${!!msg}, body exists: ${!!(msg && msg.body)}, body length: ${(msg && msg.body) ? msg.body.length : 0}`);
 
             if (!msg || !msg.body || !msg.body[0]) {

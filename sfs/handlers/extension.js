@@ -34,9 +34,9 @@ function handleExtensionCommand(socket, extension, command, params) {
                     break;
                 case 'getUserData':
                 case 'syncUserData':
-                    // Return comprehensive user data
+                    // Return comprehensive user data (includes nanocash for sync)
                     const userData = users[socket.userId] || {};
-                    response = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"userDataSynced","username":"${socket.userName || 'n'}","avatarId":${userData.avatarId || 1},"nmp":${userData.nmp || 0},"gamesPlayed":${userData.gamesPlayed || 0},"hasSeenNewUserExperience":${userData.hasSeenNewUserExperience || false}}]]></body></msg>\x00`;
+                    response = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"userDataSynced","username":"${socket.userName || 'n'}","avatarId":${userData.avatarId || 1},"nmp":${userData.nmp || 0},"nanocash":${userData.nanocash || 0},"gamesPlayed":${userData.gamesPlayed || 0},"hasSeenNewUserExperience":${userData.hasSeenNewUserExperience || false}}]]></body></msg>\x00`;
                     break;
                 case 'updateNanovorCount':
                     // Update nanovor count
@@ -139,12 +139,6 @@ function handleExtensionCommand(socket, extension, command, params) {
                     // For new users, ensure nmp and gamesPlayed are 0 to trigger NewUserState
                     const userData1 = users[socket.userId] || {};
                     response = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"logOK","username":"${socket.userName || 'n'}","chatRoomName":"Lobby","avatarId":${userData1.avatarId || 1},"nmp":${userData1.nmp || 0},"gamesPlayed":${userData1.gamesPlayed || 0}}]]></body></msg>\x00`;
-                    break;
-                case 'getUserData':  // Request for user data after login
-                case 'syncUserData': // Sync user data request
-                    // Send user data response
-                    const userData2 = users[socket.userId] || {};
-                    response = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"userDataSynced","username":"${socket.userName || 'n'}","avatarId":${userData2.avatarId || 1},"nmp":${userData2.nmp || 0},"nanocash":${userData2.nanocash || 0},"gamesPlayed":${userData2.gamesPlayed || 0},"hasSeenNewUserExperience":${userData2.hasSeenNewUserExperience || false}}]]></body></msg>\x00`;
                     break;
                 default:
                     // For unknown commands, return unknown command response
