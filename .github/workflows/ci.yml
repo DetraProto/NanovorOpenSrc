@@ -1,0 +1,45 @@
+name: CI
+
+on:
+  push:
+    branches: [main, refactor/modular-structure]
+  pull_request:
+    branches: [main, refactor/modular-structure]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Start server and run smoke tests
+        run: |
+          node NanoServ.js &
+          SERVER_PID=$!
+          echo "Server PID: $SERVER_PID"
+          # Wait for HTTP server to be ready (port 8443)
+          for i in $(seq 1 30); do
+            if curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:8443/scws/ 2>/dev/null | grep -q 200; then
+              echo "Server ready"
+              break
+            fi
+            if [ $i -eq 30 ]; then
+              echo "Server failed to start in time"
+              kill $SERVER_PID 2>/dev/null || true
+              exit 1
+            fi
+            sleep 1
+          done
+          node scripts/smoke-test.js
+          EXIT=$?
+          kill $SERVER_PID 2>/dev/null || true
+          exit $EXIT

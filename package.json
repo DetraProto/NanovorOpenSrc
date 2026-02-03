@@ -4,7 +4,9 @@
   "description": "Nanovor game server - SmartFoxServer / SRB emulator",
   "main": "NanoServ.js",
   "scripts": {
-    "start": "node NanoServ.js"
+    "start": "node NanoServ.js",
+    "test": "node scripts/smoke-test.js",
+    "test:ci": "node scripts/smoke-test.js"
   },
   "dependencies": {
     "express": "^4.18.0",
