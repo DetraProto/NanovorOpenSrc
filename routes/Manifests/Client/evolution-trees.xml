@@ -1,0 +1,27 @@
+﻿<?xml version = "1.0" encoding = "UTF-8" ?>
+<evoTrees>
+	<tree id="1" name="electro" />
+	<tree id="2" name="tank" />
+	<tree id="3" name="gamma" />
+	<tree id="4" name="mega" />
+	<tree id="5" name="plasma" />
+	<tree id="6" name="doom" />
+	<tree id="7" name="phase" />
+	<tree id="8" name="storm" />
+	<tree id="9" name="spike" />
+	<tree id="10" name="giga" />
+	<tree id="11" name="circuit" />
+	<tree id="12" name="battle" />
+	<tree id="14" name="hyper" />
+	<tree id="15" name="rumble" />
+	<tree id="16" name="thunder" />
+	<tree id="17" name="psi" />
+	<tree id="18" name="scarab" />
+	<tree id="19" name="blaze" />
+	<tree id="20" name="turbo" />
+	<tree id="21" name="shock" />
+	<tree id="22" name="triton" />
+	<tree id="23" name="shard" />
+	<tree id="24" name="cyber" />
+	<tree id="25" name="war" />
+</evoTrees>

@@ -1,0 +1,34 @@
+<sensei version="1.0">
+	<player name="Training" userRefId="-5" show="false">
+		<swarm>
+			<nanovor assetTypeId="24" assetId="U1" />
+		</swarm>
+	</player>
+	<player name="  Easy  " userRefId="-1" show="false">
+		<swarm>
+			<nanovor assetTypeId="19" assetId="USE1" />
+			<nanovor assetTypeId="39" assetId="USE2" />
+		</swarm>
+	</player>
+	<player name=" Easy " userRefId="-2" show="false">
+		<swarm>
+			<nanovor assetTypeId="30" assetId="SE1" />
+			<nanovor assetTypeId="44" assetId="SE2" />
+		</swarm>
+	</player>
+	<player name="Easy" userRefId="-3" show="true">
+		<swarm>
+			<nanovor assetTypeId="11" assetId="E1" />
+			<nanovor assetTypeId="24" assetId="E2" />
+			<nanovor assetTypeId="6" assetId="E3" />
+		</swarm>
+	</player>
+	<player name="Medium" userRefId="-4" show="true">
+		<swarm>
+			<nanovor assetTypeId="3" assetId="M1" />
+			<nanovor assetTypeId="35" assetId="M2" />
+			<nanovor assetTypeId="50" assetId="M3" />
+			<nanovor assetTypeId="39" assetId="M4" />
+		</swarm>
+	</player>
+</sensei>
