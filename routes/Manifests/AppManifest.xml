@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AppManifest xmlns="http://127.0.0.1:8443/xsd/app-manifest/app-manifest.xsd">
+    <version>
+        <major>1</major>
+        <minor>2</minor>
+        <build>0</build>
+    </version>
+    <assets>
+        <!-- Placeholder for required assets -->
+    </assets>
+</AppManifest>

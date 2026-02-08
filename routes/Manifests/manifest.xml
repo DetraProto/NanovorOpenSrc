@@ -1,0 +1,279 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Manifest>
+  <Assets>
+    <!-- Master Data -->
+    <Group name="master_data" redundant="false">
+      <!-- EM Data -->
+      <Asset Id="EM" Type="XML" Filename="Client\Ems\em-master.xml" CRC="a1d200c5" PreMinSet="true" />
+      <Asset Id="EMValue" Type="XML" Filename="Client\Ems\em-master-value.xml" CRC="32ac0b1f" />
+      <!-- Nanovor Data -->
+      <Asset Id="Nanovor" Type="XML" Filename="Client\Characters\virmon-master.xml" CRC="936357b1" PreMinSet="true" />
+      <Asset Id="NanovorValue" Type="XML" Filename="Client\Characters\virmon-master-value.xml" CRC="9122c1d1" />
+      <!-- Badge Data -->
+      <Asset Id="Badge" Type="XML" Filename="Client\Badges\badge-master.xml" CRC="e828bbb5" PreMinSet="true" />
+      <Asset Id="Chat" Type="XML" Filename="Client\chat.xml" CRC="b4adf6f1" />
+      <Asset Id="Messages" Type="XML" Filename="Client\messages.xml" CRC="f8217ac5" />
+      <!--Evo Data-->
+      <Asset Id="EvoTree" Type="XML" Filename="Client\evolution-trees.xml" CRC="64ba8c88" PreMinSet="true" />
+      <!--Sensei-->
+      <Asset Id="SenseiPlayers" Type="XML" Filename="Client\sensei-players.xml" CRC="4941c04a" PreMinSet="true" />
+    </Group>
+    <!-- Large Badges -->
+    <Group name="badge" redundant="false">
+      <Asset Id="1" Type="Bitmap" Filename="Client\Badges\badge1.png" CRC="1ff4a87c" />
+      <Asset Id="2" Type="Bitmap" Filename="Client\Badges\badge2.png" CRC="6c4f9151" />
+      <Asset Id="3" Type="Bitmap" Filename="Client\Badges\badge3.png" CRC="467ef63d" />
+      <Asset Id="4" Type="Bitmap" Filename="Client\Badges\badge4.png" CRC="c2c49e4d" />
+      <Asset Id="5" Type="Bitmap" Filename="Client\Badges\badge5.png" CRC="735417a1" />
+      <Asset Id="6" Type="Bitmap" Filename="Client\Badges\badge6.png" CRC="b4cda0cc" />
+      <Asset Id="7" Type="Bitmap" Filename="Client\Badges\badge7.png" CRC="20fba1f4" />
+      <Asset Id="8" Type="Bitmap" Filename="Client\Badges\badge8.png" CRC="dfc4ca7d" />
+      <Asset Id="9" Type="Bitmap" Filename="Client\Badges\badge9.png" CRC="0a563a51" />
+      <Asset Id="10" Type="Bitmap" Filename="Client\Badges\badge10.png" CRC="78d2a0c8" />
+      <Asset Id="11" Type="Bitmap" Filename="Client\Badges\badge11.png" CRC="96979f77" />
+      <Asset Id="12" Type="Bitmap" Filename="Client\Badges\badge12.png" CRC="9ce609cd" />
+      <Asset Id="13" Type="Bitmap" Filename="Client\Badges\badge13.png" CRC="350ba752" />
+      <Asset Id="14" Type="Bitmap" Filename="Client\Badges\badge14.png" CRC="2b09e666" />
+      <Asset Id="15" Type="Bitmap" Filename="Client\Badges\badge15.png" CRC="2e3cd374" />
+      <Asset Id="16" Type="Bitmap" Filename="Client\Badges\badge16.png" CRC="af27326b" />
+      <Asset Id="17" Type="Bitmap" Filename="Client\Badges\badge17.png" CRC="1d6cc328" />
+      <Asset Id="18" Type="Bitmap" Filename="Client\Badges\badge18.png" CRC="ab95d1a8" />
+      <Asset Id="19" Type="Bitmap" Filename="Client\Badges\badge19.png" CRC="c98450c8" />
+      <Asset Id="20" Type="Bitmap" Filename="Client\Badges\badge20.png" CRC="4c8431a4" />
+      <Asset Id="21" Type="Bitmap" Filename="Client\Badges\badge21.png" CRC="982f20ba" />
+      <Asset Id="22" Type="Bitmap" Filename="Client\Badges\badge22.png" CRC="245dfc6b" />
+      <Asset Id="23" Type="Bitmap" Filename="Client\Badges\badge23.png" CRC="aa983c56" />
+      <Asset Id="24" Type="Bitmap" Filename="Client\Badges\badge24.png" CRC="4996f26b" />
+      <Asset Id="25" Type="Bitmap" Filename="Client\Badges\badge25.png" CRC="cccf81a7" />
+      <Asset Id="26" Type="Bitmap" Filename="Client\Badges\badge26.png" CRC="f5b9f796" />
+      <Asset Id="27" Type="Bitmap" Filename="Client\Badges\badge27.png" CRC="d36a4a6e" />
+      <Asset Id="28" Type="Bitmap" Filename="Client\Badges\badge28.png" CRC="47bba4b8" />
+      <Asset Id="29" Type="Bitmap" Filename="Client\Badges\badge29.png" CRC="b8bae182" />
+      <Asset Id="30" Type="Bitmap" Filename="Client\Badges\badge30.png" CRC="ff9707ee" />
+      <Asset Id="31" Type="Bitmap" Filename="Client\Badges\badge31.png" CRC="099ff886" />
+      <Asset Id="32" Type="Bitmap" Filename="Client\Badges\badge32.png" CRC="59432817" />
+      <Asset Id="33" Type="Bitmap" Filename="Client\Badges\badge33.png" CRC="534c53ce" />
+      <Asset Id="34" Type="Bitmap" Filename="Client\Badges\badge34.png" CRC="c9ae84ac" />
+      <Asset Id="35" Type="Bitmap" Filename="Client\Badges\badge35.png" CRC="89948f8a" />
+      <Asset Id="36" Type="Bitmap" Filename="Client\Badges\badge36.png" CRC="eb83a1ff" />
+      <Asset Id="37" Type="Bitmap" Filename="Client\Badges\badge37.png" CRC="873e10e8" />
+      <Asset Id="38" Type="Bitmap" Filename="Client\Badges\badge38.png" CRC="102bb494" />
+      <Asset Id="39" Type="Bitmap" Filename="Client\Badges\badge39.png" CRC="0a183e14" />
+      <Asset Id="40" Type="Bitmap" Filename="Client\Badges\badge40.png" CRC="31e9e105" />
+      <Asset Id="41" Type="Bitmap" Filename="Client\Badges\badge41.png" CRC="0c3e4472" />
+      <Asset Id="42" Type="Bitmap" Filename="Client\Badges\badge42.png" CRC="7a440d7e" />
+      <Asset Id="43" Type="Bitmap" Filename="Client\Badges\badge43.png" CRC="7b6dacea" />
+      <Asset Id="44" Type="Bitmap" Filename="Client\Badges\badge44.png" CRC="e9f2b914" />
+      <Asset Id="45" Type="Bitmap" Filename="Client\Badges\badge45.png" CRC="b946ac6b" />
+      <Asset Id="46" Type="Bitmap" Filename="Client\Badges\badge46.png" CRC="7108cf96" />
+      <Asset Id="47" Type="Bitmap" Filename="Client\Badges\badge47.png" CRC="aa4ef6a1" />
+      <Asset Id="48" Type="Bitmap" Filename="Client\Badges\badge48.png" CRC="d3811ef5" />
+      <Asset Id="49" Type="Bitmap" Filename="Client\Badges\badge49.png" CRC="d066ee48" />
+      <Asset Id="50" Type="Bitmap" Filename="Client\Badges\badge50.png" CRC="c4a4d03a" />
+      <Asset Id="51" Type="Bitmap" Filename="Client\Badges\badge51.png" CRC="ea530812" />
+      <Asset Id="52" Type="Bitmap" Filename="Client\Badges\badge52.png" CRC="84c9fafb" />
+      <Asset Id="53" Type="Bitmap" Filename="Client\Badges\badge53.png" CRC="79ab33a3" />
+      <Asset Id="54" Type="Bitmap" Filename="Client\Badges\badge54.png" CRC="1d4b1669" />
+      <Asset Id="55" Type="Bitmap" Filename="Client\Badges\badge55.png" CRC="4fcc5e24" />
+      <Asset Id="56" Type="Bitmap" Filename="Client\Badges\badge56.png" CRC="e59ac7e6" />
+      <Asset Id="57" Type="Bitmap" Filename="Client\Badges\badge57.png" CRC="4c34d130" />
+      <Asset Id="58" Type="Bitmap" Filename="Client\Badges\badge58.png" CRC="cb618c94" />
+      <Asset Id="59" Type="Bitmap" Filename="Client\Badges\badge59.png" CRC="4da73eb5" />
+      <Asset Id="60" Type="Bitmap" Filename="Client\Badges\badge60.png" CRC="c2cc82ad" />
+      <Asset Id="61" Type="Bitmap" Filename="Client\Badges\badge61.png" CRC="3c5f3861" />
+      <Asset Id="62" Type="Bitmap" Filename="Client\Badges\badge62.png" CRC="edcfe01a" />
+      <Asset Id="63" Type="Bitmap" Filename="Client\Badges\badge63.png" CRC="f931504a" />
+      <Asset Id="64" Type="Bitmap" Filename="Client\Badges\badge64.png" CRC="a0334a3b" />
+      <Asset Id="65" Type="Bitmap" Filename="Client\Badges\badge65.png" CRC="fb909fba" />
+      <Asset Id="66" Type="Bitmap" Filename="Client\Badges\badge66.png" CRC="945d144f" />
+      <Asset Id="67" Type="Bitmap" Filename="Client\Badges\badge67.png" CRC="e82c29f3" />
+      <Asset Id="68" Type="Bitmap" Filename="Client\Badges\badge68.png" CRC="a62a3771" />
+      <Asset Id="69" Type="Bitmap" Filename="Client\Badges\badge69.png" CRC="323f90b8" />
+      <Asset Id="70" Type="Bitmap" Filename="Client\Badges\badge70.png" CRC="f477437d" />
+      <Asset Id="71" Type="Bitmap" Filename="Client\Badges\badge71.png" CRC="759db65f" />
+      <Asset Id="72" Type="Bitmap" Filename="Client\Badges\badge72.png" CRC="e1d8f443" />
+      <Asset Id="73" Type="Bitmap" Filename="Client\Badges\badge73.png" CRC="8da2af09" />
+      <Asset Id="74" Type="Bitmap" Filename="Client\Badges\badge74.png" CRC="dbac416a" />
+      <Asset Id="75" Type="Bitmap" Filename="Client\Badges\badge75.png" CRC="dc4bbe1b" />
+      <Asset Id="76" Type="Bitmap" Filename="Client\Badges\badge76.png" CRC="071bb40f" />
+      <Asset Id="77" Type="Bitmap" Filename="Client\Badges\badge77.png" CRC="a5d0d818" />
+      <Asset Id="78" Type="Bitmap" Filename="Client\Badges\badge78.png" CRC="bd5f56a6" />
+      <Asset Id="79" Type="Bitmap" Filename="Client\Badges\badge79.png" CRC="f8061f15" />
+      <Asset Id="80" Type="Bitmap" Filename="Client\Badges\badge80.png" CRC="fdd82735" />
+      <Asset Id="81" Type="Bitmap" Filename="Client\Badges\badge81.png" CRC="994994b9" />
+      <Asset Id="82" Type="Bitmap" Filename="Client\Badges\badge82.png" CRC="39b94a78" />
+      <Asset Id="83" Type="Bitmap" Filename="Client\Badges\badge83.png" CRC="59b4ffc3" />
+      <Asset Id="84" Type="Bitmap" Filename="Client\Badges\badge84.png" CRC="f1be8dc1" />
+      <Asset Id="85" Type="Bitmap" Filename="Client\Badges\badge85.png" CRC="b0980906" />
+      <Asset Id="86" Type="Bitmap" Filename="Client\Badges\badge86.png" CRC="33cc00f8" />
+      <Asset Id="87" Type="Bitmap" Filename="Client\Badges\badge87.png" CRC="9931f590" />
+      <Asset Id="88" Type="Bitmap" Filename="Client\Badges\badge88.png" CRC="71dea117" />
+      <Asset Id="89" Type="Bitmap" Filename="Client\Badges\badge89.png" CRC="edcc516b" />
+      <Asset Id="90" Type="Bitmap" Filename="Client\Badges\badge90.png" CRC="3957972a" />
+      <Asset Id="91" Type="Bitmap" Filename="Client\Badges\badge91.png" CRC="e33d3ae2" />
+      <Asset Id="92" Type="Bitmap" Filename="Client\Badges\badge92.png" CRC="2e2e7300" />
+      <Asset Id="93" Type="Bitmap" Filename="Client\Badges\badge93.png" CRC="e6afb850" />
+      <Asset Id="94" Type="Bitmap" Filename="Client\Badges\badge94.png" CRC="c41e0972" />
+      <Asset Id="95" Type="Bitmap" Filename="Client\Badges\badge95.png" CRC="c1208aa5" />
+      <Asset Id="96" Type="Bitmap" Filename="Client\Badges\badge96.png" CRC="d91fcd42" />
+      <Asset Id="97" Type="Bitmap" Filename="Client\Badges\badge97.png" CRC="92e558c7" />
+    </Group>
+    <!-- Breadcrumb -->
+    <Group name="breadcrumb" redundant="false">
+      <Asset Id="newscrumb" Type="SWF" Filename="Client\Breadcrumbs\NewsCrumb.swf" CRC="23a5497e" />
+      <Asset Id="newsbanner" Type="SWF" Filename="Client\Breadcrumbs\NewsBanner.swf" CRC="ef725133" />
+      <!--
+	  <Asset Id="collectandtrade" Type="SWF" Filename="Client\Breadcrumbs\CollectAndTrade.swf" CRC="b3b4b3ca" />
+      <Asset Id="firstmultibattle" Type="SWF" Filename="Client\Breadcrumbs\FirstMultiBattle.swf" CRC="c4042686" />
+      <Asset Id="firstsolobattle" Type="SWF" Filename="Client\Breadcrumbs\FirstSoloBattle.swf" CRC="e3f3336f" />
+      <Asset Id="introepisode" Type="SWF" Filename="Client\Breadcrumbs\IntroEpisode.swf" CRC="9690b1b8" />
+      <Asset Id="evolve" Type="SWF" Filename="Client\Breadcrumbs\Evolve.swf" CRC="8731ce46" />
+      <Asset Id="nanolog" Type="SWF" Filename="Client\Breadcrumbs\Nanolog.swf" CRC="926047c0" />
+      <Asset Id="rewards" Type="SWF" Filename="Client\Breadcrumbs\Rewards.swf" CRC="ac9c99d3" />
+      <Asset Id="secondsolobattle" Type="SWF" Filename="Client\Breadcrumbs\SecondSoloBattle.swf" CRC="749a3a3e" />
+	  -->
+    </Group>
+    <!-- Help -->
+    <Group name="help" redundant="false">
+      <Asset Id="helpSwarmChooser" Type="swf" Filename="Client\Help\Help_SwarmChooser.swf" CRC="75149998" />
+    </Group>
+  </Assets>
+  <SuperManifests>
+    <Manifest name="CharacterPrototype1" Filename="Client\CharactersPrototype\1\manifest.xml" CRC="fe7f49ae" />
+    <Manifest name="CharacterPrototype2" Filename="Client\CharactersPrototype\2\manifest.xml" CRC="95c9cf87" />
+    <Manifest name="CharacterPrototype3" Filename="Client\CharactersPrototype\3\manifest.xml" CRC="7d5aa33a" />
+    <Manifest name="SoundSuper" Filename="Client\Sound\Super\manifest.xml" CRC="4df15be1" />
+  </SuperManifests>
+  <Manifests>
+    <Manifest name="NanovorTypeId1" Filename="Client\Characters\1\manifest.xml" CRC="dd0e4f65" SuperManifestName="CharacterPrototype2" PreMinSet="true" />
+    <Manifest name="NanovorTypeId2" Filename="Client\Characters\2\manifest.xml" CRC="effb7209" SuperManifestName="CharacterPrototype2" />
+    <Manifest name="NanovorTypeId3" Filename="Client\Characters\3\manifest.xml" CRC="d256aea6" SuperManifestName="CharacterPrototype2" />
+    <Manifest name="NanovorTypeId4" Filename="Client\Characters\4\manifest.xml" CRC="fc6182ef" SuperManifestName="CharacterPrototype2" />
+    <Manifest name="NanovorTypeId5" Filename="Client\Characters\5\manifest.xml" CRC="0169d623" SuperManifestName="CharacterPrototype2" />
+    <Manifest name="NanovorTypeId6" Filename="Client\Characters\6\manifest.xml" CRC="f661c22c" SuperManifestName="CharacterPrototype2" />
+    <Manifest name="NanovorTypeId7" Filename="Client\Characters\7\manifest.xml" CRC="672cc0af" SuperManifestName="CharacterPrototype2" />
+    <Manifest name="NanovorTypeId8" Filename="Client\Characters\8\manifest.xml" CRC="c78a72ec" SuperManifestName="CharacterPrototype2" />
+    <Manifest name="NanovorTypeId9" Filename="Client\Characters\9\manifest.xml" CRC="95e0448b" SuperManifestName="CharacterPrototype2" />
+    <Manifest name="NanovorTypeId10" Filename="Client\Characters\10\manifest.xml" CRC="dc710072" SuperManifestName="CharacterPrototype2" />
+    <Manifest name="NanovorTypeId11" Filename="Client\Characters\11\manifest.xml" CRC="f93a83b2" SuperManifestName="CharacterPrototype2" />
+    <Manifest name="NanovorTypeId12" Filename="Client\Characters\12\manifest.xml" CRC="6f826743" SuperManifestName="CharacterPrototype2" />
+    <Manifest name="NanovorTypeId13" Filename="Client\Characters\13\manifest.xml" CRC="d329c340" SuperManifestName="CharacterPrototype2" />
+    <Manifest name="NanovorTypeId14" Filename="Client\Characters\14\manifest.xml" CRC="e6deb641" SuperManifestName="CharacterPrototype2" />
+    <Manifest name="NanovorTypeId15" Filename="Client\Characters\15\manifest.xml" CRC="1eea97c2" SuperManifestName="CharacterPrototype2" />
+    <Manifest name="NanovorTypeId16" Filename="Client\Characters\16\manifest.xml" CRC="f90b52e3" SuperManifestName="CharacterPrototype1" />
+    <Manifest name="NanovorTypeId17" Filename="Client\Characters\17\manifest.xml" CRC="2f740789" SuperManifestName="CharacterPrototype3" />
+    <Manifest name="NanovorTypeId18" Filename="Client\Characters\18\manifest.xml" CRC="e82dee48" SuperManifestName="CharacterPrototype2" />
+    <Manifest name="NanovorTypeId19" Filename="Client\Characters\19\manifest.xml" CRC="a3a1e468" SuperManifestName="CharacterPrototype1" />
+    <Manifest name="NanovorTypeId20" Filename="Client\Characters\20\manifest.xml" CRC="c4be2fc7" SuperManifestName="CharacterPrototype1" />
+    <Manifest name="NanovorTypeId21" Filename="Client\Characters\21\manifest.xml" CRC="bfbc7188" SuperManifestName="CharacterPrototype1" />
+    <Manifest name="NanovorTypeId22" Filename="Client\Characters\22\manifest.xml" CRC="a641f1b6" SuperManifestName="CharacterPrototype1" />
+    <Manifest name="NanovorTypeId23" Filename="Client\Characters\23\manifest.xml" CRC="b779764a" SuperManifestName="CharacterPrototype1" />
+    <Manifest name="NanovorTypeId24" Filename="Client\Characters\24\manifest.xml" CRC="79d13962" SuperManifestName="CharacterPrototype1" PreMinSet="true" />
+    <Manifest name="NanovorTypeId25" Filename="Client\Characters\25\manifest.xml" CRC="642f5f59" SuperManifestName="CharacterPrototype1" />
+    <Manifest name="NanovorTypeId26" Filename="Client\Characters\26\manifest.xml" CRC="264224f7" SuperManifestName="CharacterPrototype1" />
+    <Manifest name="NanovorTypeId27" Filename="Client\Characters\27\manifest.xml" CRC="0d957cc2" SuperManifestName="CharacterPrototype1" />
+    <Manifest name="NanovorTypeId28" Filename="Client\Characters\28\manifest.xml" CRC="5fdf4e99" SuperManifestName="CharacterPrototype1" />
+    <Manifest name="NanovorTypeId29" Filename="Client\Characters\29\manifest.xml" CRC="c3a17bb2" SuperManifestName="CharacterPrototype1" />
+    <Manifest name="NanovorTypeId30" Filename="Client\Characters\30\manifest.xml" CRC="3fe9d7a6" SuperManifestName="CharacterPrototype1" />
+    <Manifest name="NanovorTypeId31" Filename="Client\Characters\31\manifest.xml" CRC="d06f0ec3" SuperManifestName="CharacterPrototype3" />
+    <Manifest name="NanovorTypeId32" Filename="Client\Characters\32\manifest.xml" CRC="fd50aa9a" SuperManifestName="CharacterPrototype2" />
+    <Manifest name="NanovorTypeId33" Filename="Client\Characters\33\manifest.xml" CRC="10eef85c" SuperManifestName="CharacterPrototype1" />
+    <Manifest name="NanovorTypeId34" Filename="Client\Characters\34\manifest.xml" CRC="e6141278" SuperManifestName="CharacterPrototype1" />
+    <Manifest name="NanovorTypeId35" Filename="Client\Characters\35\manifest.xml" CRC="c42048a4" SuperManifestName="CharacterPrototype1" />
+    <Manifest name="NanovorTypeId36" Filename="Client\Characters\36\manifest.xml" CRC="3c0f5ea7" SuperManifestName="CharacterPrototype1" />
+    <Manifest name="NanovorTypeId37" Filename="Client\Characters\37\manifest.xml" CRC="f09046bb" SuperManifestName="CharacterPrototype1" />
+    <Manifest name="NanovorTypeId38" Filename="Client\Characters\38\manifest.xml" CRC="7ca22aaa" SuperManifestName="CharacterPrototype1" />
+    <Manifest name="NanovorTypeId39" Filename="Client\Characters\39\manifest.xml" CRC="751975b0" SuperManifestName="CharacterPrototype3" />
+    <Manifest name="NanovorTypeId40" Filename="Client\Characters\40\manifest.xml" CRC="f17cefb0" SuperManifestName="CharacterPrototype3" />
+    <Manifest name="NanovorTypeId41" Filename="Client\Characters\41\manifest.xml" CRC="ccebf4dc" SuperManifestName="CharacterPrototype3" />
+    <Manifest name="NanovorTypeId42" Filename="Client\Characters\42\manifest.xml" CRC="2e9cabf3" SuperManifestName="CharacterPrototype3" />
+    <Manifest name="NanovorTypeId43" Filename="Client\Characters\43\manifest.xml" CRC="ed12ecc0" SuperManifestName="CharacterPrototype3" />
+    <Manifest name="NanovorTypeId44" Filename="Client\Characters\44\manifest.xml" CRC="26a9a39f" SuperManifestName="CharacterPrototype3" />
+    <Manifest name="NanovorTypeId45" Filename="Client\Characters\45\manifest.xml" CRC="9dc1e877" SuperManifestName="CharacterPrototype3" />
+    <Manifest name="NanovorTypeId46" Filename="Client\Characters\46\manifest.xml" CRC="746bbe78" SuperManifestName="CharacterPrototype3" />
+    <Manifest name="NanovorTypeId47" Filename="Client\Characters\47\manifest.xml" CRC="c2a3f670" SuperManifestName="CharacterPrototype3" />
+    <Manifest name="NanovorTypeId48" Filename="Client\Characters\48\manifest.xml" CRC="139d272e" SuperManifestName="CharacterPrototype3" />
+    <Manifest name="NanovorTypeId49" Filename="Client\Characters\49\manifest.xml" CRC="774fe3cd" SuperManifestName="CharacterPrototype3" />
+    <Manifest name="NanovorTypeId50" Filename="Client\Characters\50\manifest.xml" CRC="64a16c95" SuperManifestName="CharacterPrototype3" />
+    <Manifest name="NanovorTypeId51" Filename="Client\Characters\51\manifest.xml" CRC="99522278" SuperManifestName="CharacterPrototype3" />
+    <Manifest name="NanovorTypeId52" Filename="Client\Characters\52\manifest.xml" CRC="9ee7dde2" SuperManifestName="CharacterPrototype3" />
+    <Manifest name="NanovorTypeId53" Filename="Client\Characters\53\manifest.xml" CRC="b13ce63d" SuperManifestName="CharacterPrototype2" />
+    <Manifest name="NanovorTypeId54" Filename="Client\Characters\54\manifest.xml" CRC="c4315506" SuperManifestName="CharacterPrototype3" />
+    <Manifest name="NanovorTypeId55" Filename="Client\Characters\55\manifest.xml" CRC="03e3849b" SuperManifestName="CharacterPrototype3" />
+    <Manifest name="NanovorTypeId56" Filename="Client\Characters\56\manifest.xml" CRC="9a33adb1" SuperManifestName="CharacterPrototype3" />
+    <Manifest name="NanovorTypeId57" Filename="Client\Characters\57\manifest.xml" CRC="e16b7aff" SuperManifestName="CharacterPrototype1" />
+    <Manifest name="NanovorTypeId62" Filename="Client\Characters\62\manifest.xml" CRC="b1861cb7" SuperManifestName="CharacterPrototype1" />
+    <Manifest name="NanovorTypeId63" Filename="Client\Characters\63\manifest.xml" CRC="59ab8596" SuperManifestName="CharacterPrototype2" />
+    <Manifest name="NanovorTypeId64" Filename="Client\Characters\64\manifest.xml" CRC="c5ced853" SuperManifestName="CharacterPrototype2" />
+    <Manifest name="NanovorTypeId69" Filename="Client\Characters\69\manifest.xml" CRC="942f423a" SuperManifestName="CharacterPrototype3" />
+    <Manifest name="NanovorTypeId71" Filename="Client\Characters\71\manifest.xml" CRC="d7681986" SuperManifestName="CharacterPrototype2" />
+    <Manifest name="NanovorTypeId75" Filename="Client\Characters\75\manifest.xml" CRC="208448eb" SuperManifestName="CharacterPrototype1" />
+    <Manifest name="NanovorTypeId79" Filename="Client\Characters\79\manifest.xml" CRC="21f22861" SuperManifestName="CharacterPrototype2" />
+    <Manifest name="NanovorTypeId80" Filename="Client\Characters\80\manifest.xml" CRC="a6770696" SuperManifestName="CharacterPrototype2" />
+    <Manifest name="NanovorTypeId81" Filename="Client\Characters\81\manifest.xml" CRC="cd4e7b8c" SuperManifestName="CharacterPrototype2" />
+    <Manifest name="NanovorTypeId82" Filename="Client\Characters\82\manifest.xml" CRC="995d29e6" SuperManifestName="CharacterPrototype2" />
+    <Manifest name="NanovorTypeId83" Filename="Client\Characters\83\manifest.xml" CRC="b191b1fc" SuperManifestName="CharacterPrototype2" />
+    <Manifest name="NanovorTypeId84" Filename="Client\Characters\84\manifest.xml" CRC="20693206" SuperManifestName="CharacterPrototype2" />
+    <Manifest name="NanovorTypeId85" Filename="Client\Characters\85\manifest.xml" CRC="fef7cd05" SuperManifestName="CharacterPrototype2" />
+    <Manifest name="NanovorTypeId86" Filename="Client\Characters\86\manifest.xml" CRC="e5b866e1" SuperManifestName="CharacterPrototype2" />
+    <Manifest name="NanovorTypeId87" Filename="Client\Characters\87\manifest.xml" CRC="93d4d50e" SuperManifestName="CharacterPrototype2" />
+    <Manifest name="NanovorTypeId88" Filename="Client\Characters\88\manifest.xml" CRC="ea8690c9" SuperManifestName="CharacterPrototype2" />
+    <Manifest name="NanovorTypeId89" Filename="Client\Characters\89\manifest.xml" CRC="08653979" SuperManifestName="CharacterPrototype2" />
+    <Manifest name="NanovorTypeId90" Filename="Client\Characters\90\manifest.xml" CRC="06ed81fd" SuperManifestName="CharacterPrototype2" />
+    <Manifest name="NanovorTypeId91" Filename="Client\Characters\91\manifest.xml" CRC="fda9ed12" SuperManifestName="CharacterPrototype2" />
+    <Manifest name="NanovorTypeId92" Filename="Client\Characters\92\manifest.xml" CRC="15618357" SuperManifestName="CharacterPrototype2" />
+    <Manifest name="NanovorTypeId93" Filename="Client\Characters\93\manifest.xml" CRC="44d55324" SuperManifestName="CharacterPrototype2" />
+    <Manifest name="NanovorTypeId94" Filename="Client\Characters\94\manifest.xml" CRC="82729b07" SuperManifestName="CharacterPrototype2" />
+    <Manifest name="NanovorTypeId95" Filename="Client\Characters\95\manifest.xml" CRC="896392fb" SuperManifestName="CharacterPrototype1" />
+    <Manifest name="NanovorTypeId96" Filename="Client\Characters\96\manifest.xml" CRC="d5b7ab6f" SuperManifestName="CharacterPrototype3" />
+    <Manifest name="NanovorTypeId97" Filename="Client\Characters\97\manifest.xml" CRC="519643e0" SuperManifestName="CharacterPrototype1" />
+    <Manifest name="NanovorTypeId98" Filename="Client\Characters\98\manifest.xml" CRC="da723db0" SuperManifestName="CharacterPrototype1" />
+    <Manifest name="NanovorTypeId99" Filename="Client\Characters\99\manifest.xml" CRC="026ecd5d" SuperManifestName="CharacterPrototype1" />
+    <Manifest name="NanovorTypeId100" Filename="Client\Characters\100\manifest.xml" CRC="f65e3a1f" SuperManifestName="CharacterPrototype1" />
+    <Manifest name="NanovorTypeId101" Filename="Client\Characters\101\manifest.xml" CRC="de9f6a24" SuperManifestName="CharacterPrototype1" />
+    <Manifest name="NanovorTypeId102" Filename="Client\Characters\102\manifest.xml" CRC="8899a930" SuperManifestName="CharacterPrototype1" />
+    <Manifest name="NanovorTypeId103" Filename="Client\Characters\103\manifest.xml" CRC="2314456c" SuperManifestName="CharacterPrototype1" />
+    <Manifest name="NanovorTypeId104" Filename="Client\Characters\104\manifest.xml" CRC="55b5fcea" SuperManifestName="CharacterPrototype1" />
+    <Manifest name="NanovorTypeId105" Filename="Client\Characters\105\manifest.xml" CRC="a6031aba" SuperManifestName="CharacterPrototype1" />
+    <Manifest name="NanovorTypeId106" Filename="Client\Characters\106\manifest.xml" CRC="045cde80" SuperManifestName="CharacterPrototype1" />
+    <Manifest name="NanovorTypeId109" Filename="Client\Characters\109\manifest.xml" CRC="c004bb6e" SuperManifestName="CharacterPrototype1" />
+    <Manifest name="NanovorTypeId110" Filename="Client\Characters\110\manifest.xml" CRC="dc6246b2" SuperManifestName="CharacterPrototype1" />
+    <Manifest name="NanovorTypeId111" Filename="Client\Characters\111\manifest.xml" CRC="011af281" SuperManifestName="CharacterPrototype1" />
+    <Manifest name="NanovorTypeId112" Filename="Client\Characters\112\manifest.xml" CRC="2876cf6d" SuperManifestName="CharacterPrototype1" />
+    <Manifest name="NanovorTypeId114" Filename="Client\Characters\114\manifest.xml" CRC="9287ad61" SuperManifestName="CharacterPrototype1" />
+    <Manifest name="NanovorTypeId115" Filename="Client\Characters\115\manifest.xml" CRC="d7e35828" SuperManifestName="CharacterPrototype1" />
+    <Manifest name="NanovorTypeId116" Filename="Client\Characters\116\manifest.xml" CRC="aca39e7a" SuperManifestName="CharacterPrototype3" />
+    <Manifest name="NanovorTypeId118" Filename="Client\Characters\118\manifest.xml" CRC="74c93d4b" SuperManifestName="CharacterPrototype3" />
+    <Manifest name="NanovorTypeId119" Filename="Client\Characters\119\manifest.xml" CRC="62a1c9f2" SuperManifestName="CharacterPrototype3" />
+    <Manifest name="NanovorTypeId120" Filename="Client\Characters\120\manifest.xml" CRC="ff713ba9" SuperManifestName="CharacterPrototype3" />
+    <Manifest name="NanovorTypeId121" Filename="Client\Characters\121\manifest.xml" CRC="5d9170be" SuperManifestName="CharacterPrototype3" />
+    <Manifest name="NanovorTypeId122" Filename="Client\Characters\122\manifest.xml" CRC="ac594fa1" SuperManifestName="CharacterPrototype3" />
+    <Manifest name="NanovorTypeId123" Filename="Client\Characters\123\manifest.xml" CRC="b9d57627" SuperManifestName="CharacterPrototype3" />
+    <Manifest name="NanovorTypeId124" Filename="Client\Characters\124\manifest.xml" CRC="f05b7d1b" SuperManifestName="CharacterPrototype3" />
+    <Manifest name="NanovorTypeId125" Filename="Client\Characters\125\manifest.xml" CRC="413aa0d7" SuperManifestName="CharacterPrototype3" />
+    <Manifest name="NanovorTypeId126" Filename="Client\Characters\126\manifest.xml" CRC="e3a0a2ef" SuperManifestName="CharacterPrototype3" />
+    <Manifest name="NanovorTypeId127" Filename="Client\Characters\127\manifest.xml" CRC="fefcc950" SuperManifestName="CharacterPrototype3" />
+    <Manifest name="NanovorTypeId128" Filename="Client\Characters\128\manifest.xml" CRC="fbf4aabc" SuperManifestName="CharacterPrototype3" />
+    <Manifest name="NanovorTypeId129" Filename="Client\Characters\129\manifest.xml" CRC="5ca4f1ae" SuperManifestName="CharacterPrototype3" />
+    <Manifest name="NanovorTypeId130" Filename="Client\Characters\130\manifest.xml" CRC="d71822e5" SuperManifestName="CharacterPrototype3" />
+    <Manifest name="NanovorTypeId131" Filename="Client\Characters\131\manifest.xml" CRC="ac596b1f" SuperManifestName="CharacterPrototype3" />
+    <Manifest name="NanovorTypeId132" Filename="Client\Characters\132\manifest.xml" CRC="f9b936b5" SuperManifestName="CharacterPrototype3" />
+    <Manifest name="NanovorTypeId133" Filename="Client\Characters\133\manifest.xml" CRC="9ee5e278" SuperManifestName="CharacterPrototype3" />
+    <Manifest name="NanovorTypeId134" Filename="Client\Characters\134\manifest.xml" CRC="913a6311" SuperManifestName="CharacterPrototype2" />
+    <Manifest name="NanovorTypeId135" Filename="Client\Characters\135\manifest.xml" CRC="0a13595a" SuperManifestName="CharacterPrototype1" />
+    <Manifest name="NanovorTypeId136" Filename="Client\Characters\136\manifest.xml" CRC="ebc2acfa" SuperManifestName="CharacterPrototype2" />
+    <Manifest name="NanovorTypeId137" Filename="Client\Characters\137\manifest.xml" CRC="56d535b5" SuperManifestName="CharacterPrototype2" />
+    <Manifest name="NanovorTypeId138" Filename="Client\Characters\138\manifest.xml" CRC="7bad1e07" SuperManifestName="CharacterPrototype2" />
+    <Manifest name="NanovorTypeId139" Filename="Client\Characters\139\manifest.xml" CRC="8534aacc" SuperManifestName="CharacterPrototype1" />
+    <Manifest name="NanovorTypeId140" Filename="Client\Characters\140\manifest.xml" CRC="c839d382" SuperManifestName="CharacterPrototype1" />
+    <Manifest name="NanovorTypeId141" Filename="Client\Characters\141\manifest.xml" CRC="d89d5a24" SuperManifestName="CharacterPrototype3" />
+    <Manifest name="NanovorTypeId142" Filename="Client\Characters\142\manifest.xml" CRC="9e5a8dd5" SuperManifestName="CharacterPrototype3" />
+    <Manifest name="Avatars" Filename="Client\Avatars\manifest.xml" CRC="87d8dca3" />
+    <Manifest name="EMs" Filename="Client\Ems\manifest.xml" CRC="d7c4b0d1" />
+    <Manifest name="Boosters" Filename="Client\Boosters\manifest.xml" CRC="dc03ca30" />
+    <Manifest name="Overlays" Filename="Client\Overlays\manifest.xml" CRC="7eb62de5" />
+    <Manifest name="MiniGames" Filename="device\minigames\manifest.xml" CRC="1e005bf5" />
+    <Manifest name="DeviceSensei" Filename="device\s1\manifest.xml" CRC="8e26713b" />
+    <Manifest name="Sound" Filename="Client\Sound\manifest.xml" CRC="db22812b" SuperManifestName="SoundSuper" />
+  </Manifests>
+</Manifest>
