@@ -1,0 +1,5 @@
+<MainConfig>
+	<setting name="launchWebOnFirstSFS">yes</setting>
+	<setting name="filterCannedChatMessages">yes</setting>
+	<setting name="analyticsEnabled">yes</setting>
+</MainConfig>

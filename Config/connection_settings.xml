@@ -1,0 +1,5 @@
+<ConnectionSettings>
+	<srb>http://127.0.0.1:8443/xmlrpc</srb>
+	<shardlist>http://127.0.0.1:8443/scws/</shardlist>
+	<checkForNanocash value="true" />
+</ConnectionSettings>
