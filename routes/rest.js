@@ -39,7 +39,7 @@ app.get('/bankfe/resources/account/:accountId', (req, res) => {
     }
 
     const accountInfo = `
-<account xmlns="http://127.0.0.1:8443/xsd/account/account.xsd">
+<account xmlns="http://nanovor-scws.playit.plus:6520/xsd/account/account.xsd">
   <username>${user.username}</username>
   <screenname>${user.screenname}</screenname>
   <email-address>${user.email}</email-address>
@@ -79,7 +79,7 @@ app.get('/bankfe/resources/account/:accountId/stat', (req, res) => {
     }
 
     const accountStats = `
-<account-statistics xmlns="http://127.0.0.1:8443/xsd/account-statistics/account-statistics.xsd">
+<account-statistics xmlns="http://nanovor-scws.playit.plus:6520/xsd/account-statistics/account-statistics.xsd">
   <virmon-master-rating>${user.nmp}</virmon-master-rating>
   <kill-count>${user.totalKills}</kill-count>
   <game-count>${user.gamesPlayed}</game-count>
@@ -128,7 +128,7 @@ app.get('/bankfe/resources/account/:accountId/stat', (req, res) => {
     }
 
     const accountStats = `
-<account-statistics xmlns="http://127.0.0.1:8443/xsd/account-statistics/account-statistics.xsd">
+<account-statistics xmlns="http://nanovor-scws.playit.plus:6520/xsd/account-statistics/account-statistics.xsd">
   <virmon-master-rating>${user.nmp}</virmon-master-rating>
   <kill-count>${user.totalKills}</kill-count>
   <game-count>${user.gamesPlayed}</game-count>
@@ -155,8 +155,8 @@ app.get('/xsd/account-statistics/account-statistics.xsd', (req, res) => {
     // Return XSD schema for account statistics
     const xsdSchema = `<?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
-           targetNamespace="http://127.0.0.1:8443/xsd/account-statistics/account-statistics.xsd"
-           xmlns:tns="http://127.0.0.1:8443/xsd/account-statistics/account-statistics.xsd"
+           targetNamespace="http://nanovor-scws.playit.plus:6520/xsd/account-statistics/account-statistics.xsd"
+           xmlns:tns="http://nanovor-scws.playit.plus:6520/xsd/account-statistics/account-statistics.xsd"
            elementFormDefault="qualified">
 
     <xs:element name="account-statistics">
@@ -214,7 +214,7 @@ app.get('/stat/account/:accountId', (req, res) => {
 
     // Return account statistics in the expected format
     const accountStats = `
-<account-statistics xmlns="http://127.0.0.1:8443/xsd/account-statistics/account-statistics.xsd">
+<account-statistics xmlns="http://nanovor-scws.playit.plus:6520/xsd/account-statistics/account-statistics.xsd">
   <virmon-master-rating>${user.nmp || 0}</virmon-master-rating>
   <kill-count>${user.totalKills || 0}</kill-count>
   <game-count>${user.gamesPlayed || 0}</game-count>
@@ -256,7 +256,7 @@ app.get('/stat/account/', (req, res) => {
 
     // Return account statistics in the expected format
     const accountStats = `
-<account-statistics xmlns="http://127.0.0.1:8443/xsd/account-statistics/account-statistics.xsd">
+<account-statistics xmlns="http://nanovor-scws.playit.plus:6520/xsd/account-statistics/account-statistics.xsd">
   <virmon-master-rating>${user.nmp || 0}</virmon-master-rating>
   <kill-count>${user.totalKills || 0}</kill-count>
   <game-count>${user.gamesPlayed || 0}</game-count>
@@ -301,7 +301,7 @@ app.get('/bankfe/resources/account/:accountId', (req, res) => {
 
     // Return account info in the expected format
     const accountInfo = `
-<account xmlns="http://127.0.0.1:8443/xsd/account/account.xsd">
+<account xmlns="http://nanovor-scws.playit.plus:6520/xsd/account/account.xsd">
   <username>${user.username}</username>
   <screenname>${user.screenname}</screenname>
   <email-address>${user.email}</email-address>
@@ -345,7 +345,7 @@ app.get('/bankfe/resources/account/profile/:accountId', (req, res) => {
     }
 
     const profileInfo = `
-<account-profile xmlns="http://127.0.0.1:8443/xsd/account/account-profile.xsd">
+<account-profile xmlns="http://nanovor-scws.playit.plus:6520/xsd/account/account-profile.xsd">
   <virmon-master-rating>${user.nmp || 0}</virmon-master-rating>
   <game-count>${user.gamesPlayed || 0}</game-count>
   <phone-number>${user.phoneNumber || ''}</phone-number>
@@ -438,7 +438,7 @@ app.post('/bankfe/resources/account/:accountId/nanovor', (req, res) => {
     // Save user data after updating inventory
     saveUserData(accountId);
 
-    const response = `<nanovor-add-success xmlns="http://127.0.0.1:8443/xsd/nanovor-add/nanovor-add-success.xsd"/>`;
+    const response = `<nanovor-add-success xmlns="http://nanovor-scws.playit.plus:6520/xsd/nanovor-add/nanovor-add-success.xsd"/>`;
 
     console.log(`[${new Date().toISOString()}] Successfully added nanovor to account ${accountId}`);
     res.set('Content-Type', 'application/xml');
@@ -481,7 +481,7 @@ app.delete('/bankfe/resources/account/:accountId/nanovor/:nanovorId', (req, res)
         saveUserData(accountId);
     }
 
-    const response = `<nanovor-remove-success xmlns="http://127.0.0.1:8443/xsd/nanovor-remove/nanovor-remove-success.xsd"/>`;
+    const response = `<nanovor-remove-success xmlns="http://nanovor-scws.playit.plus:6520/xsd/nanovor-remove/nanovor-remove-success.xsd"/>`;
 
     console.log(`[${new Date().toISOString()}] Successfully removed nanovor ${nanovorId} from account ${accountId}`);
     res.set('Content-Type', 'application/xml');
@@ -569,7 +569,7 @@ app.post('/bankfe/resources/account/:accountId/em', (req, res) => {
     // Save user data after updating inventory
     saveUserData(accountId);
 
-    const response = `<em-add-success xmlns="http://127.0.0.1:8443/xsd/em-add/em-add-success.xsd"/>`;
+    const response = `<em-add-success xmlns="http://nanovor-scws.playit.plus:6520/xsd/em-add/em-add-success.xsd"/>`;
 
     console.log(`[${new Date().toISOString()}] Successfully added EM to account ${accountId}`);
     res.set('Content-Type', 'application/xml');
@@ -611,7 +611,7 @@ app.delete('/bankfe/resources/account/:accountId/em/:emId', (req, res) => {
         saveUserData(accountId);
     }
 
-    const response = `<em-remove-success xmlns="http://127.0.0.1:8443/xsd/em-remove/em-remove-success.xsd"/>`;
+    const response = `<em-remove-success xmlns="http://nanovor-scws.playit.plus:6520/xsd/em-remove/em-remove-success.xsd"/>`;
 
     console.log(`[${new Date().toISOString()}] Successfully removed EM ${emId} from account ${accountId}`);
     res.set('Content-Type', 'application/xml');
@@ -647,7 +647,7 @@ app.get('/bankfe/resources/account/:accountId/badge', (req, res) => {
     const badges = user.badges || [];
 
     const badgesXml = `
-<badges xmlns="http://127.0.0.1:8443/xsd/badges/badges.xsd">
+<badges xmlns="http://nanovor-scws.playit.plus:6520/xsd/badges/badges.xsd">
 </badges>`;
 
     console.log(`[${new Date().toISOString()}] Sending account badges response for ${accountId} with ${badges.length} badges`);
@@ -846,7 +846,7 @@ app.get('/bankfe/resources/account/collections/:accountId', (req, res) => {
     // NOTE: EM inventory is intentionally excluded for now to simplify the collection list
 
     const collectionsData = `
-<collections xmlns="http://127.0.0.1:8443/xsd/collections/collections.xsd">
+<collections xmlns="http://nanovor-scws.playit.plus:6520/xsd/collections/collections.xsd">
   <virmonList>
 ${virmonXml}
   </virmonList>
@@ -878,7 +878,7 @@ app.get('/bankfe/resources/asset/:assetId/badge', (req, res) => {
     // Return asset badges info
     // For now, return empty badges
     const badgesXml = `
-<asset-badges xmlns="http://127.0.0.1:8443/xsd/asset/asset-badges.xsd">
+<asset-badges xmlns="http://nanovor-scws.playit.plus:6520/xsd/asset/asset-badges.xsd">
 </asset-badges>`;
 
     console.log(`[${new Date().toISOString()}] Sending asset badges response for asset ${assetId}`);
@@ -914,7 +914,7 @@ app.post('/bankfe/resources/account/:accountId/profile', (req, res) => {
     }
 
     // Return success response
-    const response = `<profile-update-success xmlns="http://127.0.0.1:8443/xsd/account/profile-update-success.xsd"/>`;
+    const response = `<profile-update-success xmlns="http://nanovor-scws.playit.plus:6520/xsd/account/profile-update-success.xsd"/>`;
 
     console.log(`[${new Date().toISOString()}] Sending profile update success response for ${accountId}`);
     res.set('Content-Type', 'application/xml');
@@ -945,7 +945,7 @@ app.post('/bankfe/resources/asset/:assetId/jolt', (req, res) => {
     console.log(`[${new Date().toISOString()}] Processed jolt spend for asset ${assetId}`);
 
     // Return success response
-    const response = `<jolt-spend-success xmlns="http://127.0.0.1:8443/xsd/jolt-spend/jolt-spend-success.xsd"/>`;
+    const response = `<jolt-spend-success xmlns="http://nanovor-scws.playit.plus:6520/xsd/jolt-spend/jolt-spend-success.xsd"/>`;
 
     console.log(`[${new Date().toISOString()}] Sending jolt spend success response for asset ${assetId}`);
     res.set('Content-Type', 'application/xml');
@@ -990,7 +990,7 @@ app.get('/bankfe/resources/account/activity/:accountId', (req, res) => {
         loginActivities = Math.min(loginActivities, 8);
     }
 
-    let activityXml = '<activity-list xmlns="http://127.0.0.1:8443/xsd/activity/activity-list.xsd">';
+    let activityXml = '<activity-list xmlns="http://nanovor-scws.playit.plus:6520/xsd/activity/activity-list.xsd">';
 
     // Add login activities (the client checks for ACCOUNT_LOGIN type)
     for (let i = 0; i < loginActivities; i++) {
@@ -1036,7 +1036,7 @@ app.post('/bankfe/resources/evolution/:evolutionId', (req, res) => {
     console.log(`[${new Date().toISOString()}] Processed evolution attempt for evolution ${evolutionId}`);
 
     // Return success response
-    const response = `<evolution-success xmlns="http://127.0.0.1:8443/xsd/evolution/evolution-success.xsd"/>`;
+    const response = `<evolution-success xmlns="http://nanovor-scws.playit.plus:6520/xsd/evolution/evolution-success.xsd"/>`;
 
     console.log(`[${new Date().toISOString()}] Sending evolution success response for evolution ${evolutionId}`);
     res.set('Content-Type', 'application/xml');
@@ -1068,7 +1068,7 @@ app.get('/bankfe/resources/account/:accountId/device', (req, res) => {
 
     // Return device information (placeholder)
     const deviceInfo = `
-<device-management xmlns="http://127.0.0.1:8443/xsd/device/device-management.xsd">
+<device-management xmlns="http://nanovor-scws.playit.plus:6520/xsd/device/device-management.xsd">
 </device-management>`;
 
     console.log(`[${new Date().toISOString()}] Sending device management response for account ${accountId}`);
@@ -1190,7 +1190,7 @@ app.get('/bankfe/resources/asset/:assetId/miscellany', (req, res) => {
 
     // Return asset miscellany info (placeholder for nickname editor functionality)
     const miscellanyInfo = `
-<asset-miscellany xmlns="http://127.0.0.1:8443/xsd/asset-miscellany/asset-miscellany.xsd">
+<asset-miscellany xmlns="http://nanovor-scws.playit.plus:6520/xsd/asset-miscellany/asset-miscellany.xsd">
 </asset-miscellany>`;
 
     console.log(`[${new Date().toISOString()}] Sending asset miscellany response for asset ${assetId}`);
@@ -1214,7 +1214,7 @@ app.get('/bankfe/resources/evolution', (req, res) => {
 
     // Return evolution list (placeholder)
     const evolutionList = `
-<evolution-list xmlns="http://127.0.0.1:8443/xsd/evolution/evolution-list.xsd">
+<evolution-list xmlns="http://nanovor-scws.playit.plus:6520/xsd/evolution/evolution-list.xsd">
 </evolution-list>`;
 
     console.log(`[${new Date().toISOString()}] Sending evolution list response`);
@@ -1239,7 +1239,7 @@ app.get('/bankfe/resources/evolution/:evolutionId', (req, res) => {
 
     // Return evolution data (placeholder)
     const evolutionData = `
-<evolution xmlns="http://127.0.0.1:8443/xsd/evolution/evolution.xsd">
+<evolution xmlns="http://nanovor-scws.playit.plus:6520/xsd/evolution/evolution.xsd">
   <evolution-id>${evolutionId}</evolution-id>
 </evolution>`;
 
@@ -1264,7 +1264,7 @@ app.get('/bankfe/resources/retail', (req, res) => {
 
     // Return available SKUs (placeholder)
     const skuList = `
-<sku-list xmlns="http://127.0.0.1:8443/xsd/retail/sku-list.xsd">
+<sku-list xmlns="http://nanovor-scws.playit.plus:6520/xsd/retail/sku-list.xsd">
 </sku-list>`;
 
     console.log(`[${new Date().toISOString()}] Sending retail/SKU list response`);
@@ -1289,7 +1289,7 @@ app.post('/bankfe/resources/retail/:skuId', (req, res) => {
 
     // Process SKU purchase (placeholder)
     const purchaseResponse = `
-<purchase-response xmlns="http://127.0.0.1:8443/xsd/retail/purchase-response.xsd">
+<purchase-response xmlns="http://nanovor-scws.playit.plus:6520/xsd/retail/purchase-response.xsd">
   <success>true</success>
   <sku-id>${skuId}</sku-id>
 </purchase-response>`;
@@ -1323,7 +1323,7 @@ app.post('/device/:deviceId/jolt', (req, res) => {
     console.log(`[${new Date().toISOString()}] Processed jolt request for device ${deviceId}`);
 
     // Return success response
-    const response = `<device-jolt-success xmlns="http://127.0.0.1:8443/xsd/device-jolt/device-jolt-success.xsd"/>`;
+    const response = `<device-jolt-success xmlns="http://nanovor-scws.playit.plus:6520/xsd/device-jolt/device-jolt-success.xsd"/>`;
 
     console.log(`[${new Date().toISOString()}] Sending device jolt success response for device ${deviceId}`);
     res.set('Content-Type', 'application/xml');
@@ -1348,7 +1348,7 @@ app.get('/device/:deviceId/asset/:assetId/sign/vinfo', (req, res) => {
 
     // Return asset verification info (placeholder)
     const assetVerification = `
-<asset-verification xmlns="http://127.0.0.1:8443/xsd/asset-verification/asset-verification.xsd">
+<asset-verification xmlns="http://nanovor-scws.playit.plus:6520/xsd/asset-verification/asset-verification.xsd">
 </asset-verification>`;
 
     console.log(`[${new Date().toISOString()}] Sending asset verification response for device ${deviceId}, asset ${assetId}`);
@@ -1382,7 +1382,7 @@ app.get('/device/:deviceId/account/:accountId/sign/plyinfo', (req, res) => {
 
     // Return player information (placeholder)
     const playerInfo = `
-<player-info xmlns="http://127.0.0.1:8443/xsd/player-info/player-info.xsd">
+<player-info xmlns="http://nanovor-scws.playit.plus:6520/xsd/player-info/player-info.xsd">
 </player-info>`;
 
     console.log(`[${new Date().toISOString()}] Sending player info response for device ${deviceId}, account ${accountId}`);
@@ -1416,7 +1416,7 @@ app.get('/bankfe/manifests/nanolog', (req, res) => {
 
     // Return empty nanolog response to allow client to continue
     const nanologResponse = `<?xml version="1.0" encoding="UTF-8"?>
-<nanolog xmlns="http://127.0.0.1:8443/xsd/nanolog/nanolog.xsd">
+<nanolog xmlns="http://nanovor-scws.playit.plus:6520/xsd/nanolog/nanolog.xsd">
     <entries>
         <!-- Placeholder for nanolog entries -->
     </entries>
@@ -1433,7 +1433,7 @@ app.get('/nanolog', (req, res) => {
 
     // Return empty nanolog response to allow client to continue
     const nanologResponse = `<?xml version="1.0" encoding="UTF-8"?>
-<nanolog xmlns="http://127.0.0.1:8443/xsd/nanolog/nanolog.xsd">
+<nanolog xmlns="http://nanovor-scws.playit.plus:6520/xsd/nanolog/nanolog.xsd">
     <entries>
         <!-- Placeholder for nanolog entries -->
     </entries>
@@ -1467,7 +1467,7 @@ app.get('/bankfe/resources/nanolog', (req, res) => {
 
     // Return empty nanolog response to allow client to continue
     const nanologResponse = `<?xml version="1.0" encoding="UTF-8"?>
-<nanolog xmlns="http://127.0.0.1:8443/xsd/nanolog/nanolog.xsd">
+<nanolog xmlns="http://nanovor-scws.playit.plus:6520/xsd/nanolog/nanolog.xsd">
     <entries>
         <!-- Placeholder for nanolog entries -->
     </entries>
@@ -1633,7 +1633,7 @@ app.get('/device/device-manifest.xml', (req, res) => {
 
     // For now, return a simple device manifest
     const deviceManifest = `<?xml version="1.0" encoding="UTF-8"?>
-<device-manifest xmlns="http://127.0.0.1:8443/xsd/device-manifest/device-manifest.xsd">
+<device-manifest xmlns="http://nanovor-scws.playit.plus:6520/xsd/device-manifest/device-manifest.xsd">
   <version>
     <major>1</major>
     <minor>0</minor>
@@ -1650,11 +1650,56 @@ app.get('/device/device-manifest.xml', (req, res) => {
 });
 
 // Required asset download endpoints that might be needed for the download manager
+// Serve SWF files from the Client directory
+app.get('/Assets/Client/:filename', (req, res) => {
+    const filename = req.params.filename;
+    const filePath = path.join(__dirname, '..', 'Client', filename);
+    
+    console.log(`[${new Date().toISOString()}] Client asset request: ${req.path}, File: ${filename}, Query:`, req.query, 'Headers:', req.headers);
+
+    // Security check to prevent directory traversal
+    if (!filePath.includes('..') && (filename.endsWith('.swf') || filename.endsWith('.xml'))) {
+        if (fs.existsSync(filePath)) {
+            console.log(`[${new Date().toISOString()}] Serving file: ${filePath}`);
+            res.sendFile(filePath);
+        } else {
+            console.log(`[${new Date().toISOString()}] File not found: ${filePath}`);
+            res.status(404).send('Asset not found');
+        }
+    } else {
+        console.log(`[${new Date().toISOString()}] Invalid file request: ${filePath}`);
+        res.status(400).send('Invalid file request');
+    }
+});
+
+// Fallback for other asset requests
 app.get('/Assets/*', (req, res) => {
     console.log(`[${new Date().toISOString()}] Asset request: ${req.path}, Query:`, req.query, 'Headers:', req.headers);
 
     // For now, return a simple response to prevent hanging
     res.status(404).send('Asset not found');
+});
+
+// Direct access to Client SWF files as referenced in AppManifest
+app.get('/Client/:filename', (req, res) => {
+    const filename = req.params.filename;
+    const filePath = path.join(__dirname, '..', 'Client', filename);
+    
+    console.log(`[${new Date().toISOString()}] Direct client asset request: ${req.path}, File: ${filename}, Query:`, req.query, 'Headers:', req.headers);
+
+    // Security check to prevent directory traversal
+    if (!filePath.includes('..') && (filename.endsWith('.swf') || filename.endsWith('.xml'))) {
+        if (fs.existsSync(filePath)) {
+            console.log(`[${new Date().toISOString()}] Serving file: ${filePath}`);
+            res.sendFile(filePath);
+        } else {
+            console.log(`[${new Date().toISOString()}] File not found: ${filePath}`);
+            res.status(404).send('File not found');
+        }
+    } else {
+        console.log(`[${new Date().toISOString()}] Invalid file request: ${filePath}`);
+        res.status(400).send('Invalid file request');
+    }
 });
 
 // Download manager endpoints
@@ -1663,7 +1708,7 @@ app.get('/bankfe/manifests/*', (req, res) => {
 
     // Return empty manifest to allow download process to continue
     const emptyManifest = `<?xml version="1.0" encoding="UTF-8"?>
-<manifest xmlns="http://127.0.0.1:8443/xsd/manifest/manifest.xsd">
+<manifest xmlns="http://nanovor-scws.playit.plus:6520/xsd/manifest/manifest.xsd">
 </manifest>`;
 
     res.set('Content-Type', 'application/xml; charset=utf-8');
@@ -1695,7 +1740,7 @@ app.get('/bankfe/resources/download-status', (req, res) => {
 
     // Return success status to indicate downloads are complete
     const statusResponse = `<?xml version="1.0" encoding="UTF-8"?>
-<download-status xmlns="http://127.0.0.1:8443/xsd/download-status/download-status.xsd">
+<download-status xmlns="http://nanovor-scws.playit.plus:6520/xsd/download-status/download-status.xsd">
     <status>complete</status>
     <progress>100</progress>
 </download-status>`;
@@ -1710,7 +1755,7 @@ app.get('/bankfe/resources/download-progress', (req, res) => {
 
     // Return immediate completion to allow login to proceed
     const progressResponse = `<?xml version="1.0" encoding="UTF-8"?>
-<download-progress xmlns="http://127.0.0.1:8443/xsd/download-progress/download-progress.xsd">
+<download-progress xmlns="http://nanovor-scws.playit.plus:6520/xsd/download-progress/download-progress.xsd">
     <files-downloaded>1</files-downloaded>
     <total-files>1</total-files>
     <bytes-downloaded>1000</bytes-downloaded>
@@ -1728,7 +1773,7 @@ app.get('/bankfe/resources/asset-manifests', (req, res) => {
 
     // Return empty manifests to allow download process to continue
     const manifestsResponse = `<?xml version="1.0" encoding="UTF-8"?>
-<asset-manifests xmlns="http://127.0.0.1:8443/xsd/asset-manifests/asset-manifests.xsd">
+<asset-manifests xmlns="http://nanovor-scws.playit.plus:6520/xsd/asset-manifests/asset-manifests.xsd">
 </asset-manifests>`;
 
     res.set('Content-Type', 'application/xml; charset=utf-8');
@@ -1741,7 +1786,7 @@ app.get('/bankfe/resources/manifests/*', (req, res) => {
 
     // Return a generic manifest response to allow download process to continue
     const genericManifest = `<?xml version="1.0" encoding="UTF-8"?>
-<generic-manifest xmlns="http://127.0.0.1:8443/xsd/generic-manifest/generic-manifest.xsd">
+<generic-manifest xmlns="http://nanovor-scws.playit.plus:6520/xsd/generic-manifest/generic-manifest.xsd">
 </generic-manifest>`;
 
     res.set('Content-Type', 'application/xml; charset=utf-8');
@@ -1754,7 +1799,7 @@ app.all('/bankfe/resources/download*', (req, res) => {
 
     // Return a success response to allow download process to complete
     const downloadResponse = `<?xml version="1.0" encoding="UTF-8"?>
-<download-response xmlns="http://127.0.0.1:8443/xsd/download-response/download-response.xsd">
+<download-response xmlns="http://nanovor-scws.playit.plus:6520/xsd/download-response/download-response.xsd">
     <status>success</status>
     <message>Download completed</message>
 </download-response>`;
@@ -1769,7 +1814,7 @@ app.all('/bankfe/resources/asset*', (req, res) => {
 
     // Return a generic asset response
     const assetResponse = `<?xml version="1.0" encoding="UTF-8"?>
-<asset-response xmlns="http://127.0.0.1:8443/xsd/asset-response/asset-response.xsd">
+<asset-response xmlns="http://nanovor-scws.playit.plus:6520/xsd/asset-response/asset-response.xsd">
     <status>success</status>
 </asset-response>`;
 
@@ -1783,7 +1828,7 @@ app.get('/clientbin/data/AppManifest.xml', (req, res) => {
 
     // Return a basic AppManifest.xml to allow client to continue
     const appManifest = `<?xml version="1.0" encoding="UTF-8"?>
-<AppManifest xmlns="http://127.0.0.1:8443/xsd/app-manifest/app-manifest.xsd">
+<AppManifest xmlns="http://nanovor-scws.playit.plus:6520/xsd/app-manifest/app-manifest.xsd">
     <version>
         <major>1</major>
         <minor>2</minor>
@@ -1811,7 +1856,7 @@ app.get('/manifests/AppManifest.xml', (req, res) => {
     console.log(`[${new Date().toISOString()}] AppManifest.xml requested, Query:`, req.query, 'Headers:', req.headers);
 
     const appManifest = `<?xml version="1.0" encoding="UTF-8"?>
-<AppManifest xmlns="http://127.0.0.1:8443/xsd/app-manifest/app-manifest.xsd">
+<AppManifest xmlns="http://nanovor-scws.playit.plus:6520/xsd/app-manifest/app-manifest.xsd">
     <version>1.2.0</version>
     <assets>
         <!-- Placeholder for required assets -->
@@ -1826,7 +1871,7 @@ app.get('/manifests/AppManifest-props.xml', (req, res) => {
     console.log(`[${new Date().toISOString()}] AppManifest-props.xml requested, Query:`, req.query, 'Headers:', req.headers);
 
     const appManifestProps = `<?xml version="1.0" encoding="UTF-8"?>
-<AppManifest-props xmlns="http://127.0.0.1:8443/xsd/app-manifest-props/app-manifest-props.xsd">
+<AppManifest-props xmlns="http://nanovor-scws.playit.plus:6520/xsd/app-manifest-props/app-manifest-props.xsd">
     <properties>
         <!-- Placeholder for app properties -->
     </properties>
@@ -1840,7 +1885,7 @@ app.get('/manifests/manifest.xml', (req, res) => {
     console.log(`[${new Date().toISOString()}] manifest.xml requested, Query:`, req.query, 'Headers:', req.headers);
 
     const manifest = `<?xml version="1.0" encoding="UTF-8"?>
-<manifest xmlns="http://127.0.0.1:8443/xsd/manifest/manifest.xsd">
+<manifest xmlns="http://nanovor-scws.playit.plus:6520/xsd/manifest/manifest.xsd">
     <assets>
         <!-- Placeholder for assets -->
     </assets>
@@ -1855,7 +1900,7 @@ app.get('/device/device-manifest.xml', (req, res) => {
     console.log(`[${new Date().toISOString()}] Device manifest requested, Query:`, req.query, 'Headers:', req.headers);
 
     const deviceManifest = `<?xml version="1.0" encoding="UTF-8"?>
-<device-manifest xmlns="http://127.0.0.1:8443/xsd/device-manifest/device-manifest.xsd">
+<device-manifest xmlns="http://nanovor-scws.playit.plus:6520/xsd/device-manifest/device-manifest.xsd">
     <version>
         <major>1</major>
         <minor>0</minor>
@@ -1876,7 +1921,7 @@ app.get('/Assets/Client/manifest.xml', (req, res) => {
 
     // Return a manifest indicating no downloads are needed to allow process to continue
     const mainManifest = `<?xml version="1.0" encoding="UTF-8"?>
-<asset-manifest xmlns="http://127.0.0.1:8443/xsd/asset-manifest/asset-manifest.xsd">
+<asset-manifest xmlns="http://nanovor-scws.playit.plus:6520/xsd/asset-manifest/asset-manifest.xsd">
     <assets>
         <!-- Empty assets list to indicate no downloads needed -->
     </assets>
@@ -1893,7 +1938,7 @@ app.get('/Assets/manifest.xml', (req, res) => {
 
     // Return a root manifest indicating no downloads are needed
     const rootManifest = `<?xml version="1.0" encoding="UTF-8"?>
-<root-manifest xmlns="http://127.0.0.1:8443/xsd/root-manifest/root-manifest.xsd">
+<root-manifest xmlns="http://nanovor-scws.playit.plus:6520/xsd/root-manifest/root-manifest.xsd">
     <manifests>
         <!-- No additional manifests needed -->
     </manifests>
@@ -1910,7 +1955,7 @@ app.get('/Assets/manifest-props.xml', (req, res) => {
 
     // Return properties indicating manifests are up to date
     const manifestProps = `<?xml version="1.0" encoding="UTF-8"?>
-<manifest-props xmlns="http://127.0.0.1:8443/xsd/manifest-props/manifest-props.xsd">
+<manifest-props xmlns="http://nanovor-scws.playit.plus:6520/xsd/manifest-props/manifest-props.xsd">
     <valid>true</valid>
     <last-checked>${Date.now()}</last-checked>
     <needs-update>false</needs-update>
@@ -1927,7 +1972,7 @@ app.get('/Assets/Client/manifest-props.xml', (req, res) => {
 
     // Return properties indicating client manifests are up to date
     const clientManifestProps = `<?xml version="1.0" encoding="UTF-8"?>
-<client-manifest-props xmlns="http://127.0.0.1:8443/xsd/client-manifest-props/client-manifest-props.xsd">
+<client-manifest-props xmlns="http://nanovor-scws.playit.plus:6520/xsd/client-manifest-props/client-manifest-props.xsd">
     <valid>true</valid>
     <last-checked>${Date.now()}</last-checked>
     <needs-update>false</needs-update>
@@ -1944,7 +1989,7 @@ app.get('/bankfe/manifests/main-manifest.xml', (req, res) => {
 
     // Return a manifest that will trigger the download manager to consider manifests loaded
     const mainManifest = `<?xml version="1.0" encoding="UTF-8"?>
-<main-manifest xmlns="http://127.0.0.1:8443/xsd/main-manifest/main-manifest.xsd">
+<main-manifest xmlns="http://nanovor-scws.playit.plus:6520/xsd/main-manifest/main-manifest.xsd">
     <assets-loaded>true</assets-loaded>
     <download-required>false</download-required>
     <asset-groups>
@@ -1962,7 +2007,7 @@ app.get('/bankfe/manifests/master-manifest.xml', (req, res) => {
 
     // Return a master manifest indicating all assets are up-to-date
     const masterManifest = `<?xml version="1.0" encoding="UTF-8"?>
-<master-manifest xmlns="http://127.0.0.1:8443/xsd/master-manifest/master-manifest.xsd">
+<master-manifest xmlns="http://nanovor-scws.playit.plus:6520/xsd/master-manifest/master-manifest.xsd">
     <status>ready</status>
     <assets-complete>true</assets-complete>
     <next-action>proceed</next-action>

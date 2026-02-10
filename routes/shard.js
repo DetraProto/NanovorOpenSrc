@@ -9,10 +9,10 @@ function registerShard(app) {
         console.log('Shard list request query:', req.query);
 
         const shardList = `<?xml version="1.0" encoding="UTF-8"?>
-<shard-list xmlns="http://127.0.0.1:8443/xsd/shard/shard-list.xsd">
+<shard-list xmlns="http://nanovor-scws.playit.plus:6520/xsd/shard/shard-list.xsd">
   <shard>
     <name>Tank</name>
-    <url>127.0.0.1</url>
+    <url>nanovor-scws.playit.plus</url>
     <max-capacity>1000</max-capacity>
     <used-capacity>10</used-capacity>
     <nice>1</nice>
