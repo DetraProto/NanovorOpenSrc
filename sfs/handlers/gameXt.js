@@ -1,7 +1,7 @@
 const state = require('../../state');
 const battle = require('../../battle');
 const user = require('../../user');
-const { updateUserStatus } = require('./buddyXt'); // Import the buddy status update function
+const { updateUserStatus } = require('./buddyListXt'); // Import the buddy status update function
 const debug = require('../../debug/Debug');
 const { users, battleRooms } = state;
 const { sendMessageToUser, broadcastToBattle } = battle;
@@ -121,7 +121,19 @@ function handleGameXtCommand(socket, command, params) {
             // Update user's status to "in battle" and notify their buddies
             updateUserStatus(socket.userId, 'in battle');
 
-            response = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"gameCreated","battleName":"${newBattleName}","gameCreator":"${socket.userName}","convertedChatRoom":false}]]></body></msg>\x00`;
+            response = JSON.stringify({
+                "t": "xt",
+                "b": {
+                    "action": "xtRes",
+                    "r": -1,
+                    "o": {
+                        "_cmd": "gameCreated",
+                        "battleName": newBattleName,
+                        "gameCreator": socket.userName,
+                        "convertedChatRoom": false
+                    }
+                }
+            }) + '\x00';
             console.log(`[GAMEXT_LOG] createQuickBattle completed, battle created: ${newBattleName}`);
             break;
 
@@ -161,7 +173,19 @@ function handleGameXtCommand(socket, command, params) {
             // Update socket's active battle
             socket.activeBattle = customBattleName;
 
-            response = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"gameCreated","battleName":"${customBattleName}","gameCreator":"${socket.userName}","convertedChatRoom":${convertedChatRoom}}]]></body></msg>\x00`;
+            response = JSON.stringify({
+                "t": "xt",
+                "b": {
+                    "action": "xtRes",
+                    "r": -1,
+                    "o": {
+                        "_cmd": "gameCreated",
+                        "battleName": customBattleName,
+                        "gameCreator": socket.userName,
+                        "convertedChatRoom": convertedChatRoom
+                    }
+                }
+            }) + '\x00';
             break;
 
         case 'inviteUser':
@@ -181,15 +205,62 @@ function handleGameXtCommand(socket, command, params) {
 
             if (inviteeId) {
                 // Send invitation to the invitee
-                const invitationMsg = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"invitationRequest","battleName":"${battleToInvite}","inviter":{"username":"${socket.userName}","userRefId":"${socket.playerId}"},"gameSwarmValue":${battleRooms[battleToInvite]?.gameSwarmValue || 1000},"convertedChatRoom":${convertedRoom}}]]></body></msg>\x00`;
+                const invitationMsg = JSON.stringify({
+                    "t": "xt",
+                    "b": {
+                        "action": "xtRes",
+                        "r": -1,
+                        "o": {
+                            "_cmd": "invitationRequest",
+                            "battleName": battleToInvite,
+                            "inviter": {
+                                "username": socket.userName,
+                                "userRefId": socket.playerId
+                            },
+                            "gameSwarmValue": battleRooms[battleToInvite]?.gameSwarmValue || 1000,
+                            "convertedChatRoom": convertedRoom
+                        }
+                    }
+                }) + '\x00';
 
                 if (sendMessageToUser(inviteeId, invitationMsg)) {
-                    response = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"invitationSent","battleName":"${battleToInvite}","invitedUser":"${invitee}"}]]></body></msg>\x00`;
+                    response = JSON.stringify({
+                        "t": "xt",
+                        "b": {
+                            "action": "xtRes",
+                            "r": -1,
+                            "o": {
+                                "_cmd": "invitationSent",
+                                "battleName": battleToInvite,
+                                "invitedUser": invitee
+                            }
+                        }
+                    }) + '\x00';
                 } else {
-                    response = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"gameInvitationError","errorMessage":"Player offline"}]]></body></msg>\x00`;
+                    response = JSON.stringify({
+                        "t": "xt",
+                        "b": {
+                            "action": "xtRes",
+                            "r": -1,
+                            "o": {
+                                "_cmd": "gameInvitationError",
+                                "errorMessage": "Player offline"
+                            }
+                        }
+                    }) + '\x00';
                 }
             } else {
-                response = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"gameInvitationError","errorMessage":"Player not found"}]]></body></msg>\x00`;
+                response = JSON.stringify({
+                    "t": "xt",
+                    "b": {
+                        "action": "xtRes",
+                        "r": -1,
+                        "o": {
+                            "_cmd": "gameInvitationError",
+                            "errorMessage": "Player not found"
+                        }
+                    }
+                }) + '\x00';
             }
             break;
 
@@ -231,7 +302,14 @@ function handleGameXtCommand(socket, command, params) {
                             "inviterId": battleRoom.creator,
                             "otherPlayers": battleRoom.players.filter(p => p.id !== socket.playerId && p.id !== battleRoom.creator).map(p => ({username: p.name, userRefId: p.id}))
                         };
-                        const responseMsg = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[${JSON.stringify(invitationResponse)}]]></body></msg>\x00`;
+                        const responseMsg = JSON.stringify({
+                            "t": "xt",
+                            "b": {
+                                "action": "xtRes",
+                                "r": -1,
+                                "o": invitationResponse
+                            }
+                        }) + '\x00';
 
                         sendMessageToUser(battleRoom.creator, responseMsg);
 
@@ -246,29 +324,95 @@ function handleGameXtCommand(socket, command, params) {
                             // Send game started message to all players (include selectedSwarmIds)
                             // Manually construct response to ensure _cmd is always present
                             const playersJson = JSON.stringify(playersForClient(battleRoom));
-                            const gameStartMsg = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"gameStarted","battleName":"${battleName}","players":${playersJson},"gameCreator":"${battleRoom.creatorName}"}]]></body></msg>\x00`;
+                            const gameStartMsg = JSON.stringify({
+                                "t": "xt",
+                                "b": {
+                                    "action": "xtRes",
+                                    "r": -1,
+                                    "o": {
+                                        "_cmd": "gameStarted",
+                                        "battleName": battleName,
+                                        "players": JSON.parse(playersJson),
+                                        "gameCreator": battleRoom.creatorName
+                                    }
+                                }
+                            }) + '\x00';
 
                             broadcastToBattle(battleName, gameStartMsg);
                         }
 
-                        response = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"invitationResponse","battleName":"${battleName}","accepted":true}]]></body></msg>\x00`;
+                        response = JSON.stringify({
+                            "t": "xt",
+                            "b": {
+                                "action": "xtRes",
+                                "r": -1,
+                                "o": {
+                                    "_cmd": "invitationResponse",
+                                    "battleName": battleName,
+                                    "accepted": true
+                                }
+                            }
+                        }) + '\x00';
                     } else {
-                        response = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"gameError"}]]></body></msg>\x00`;
+                        response = JSON.stringify({
+                            "t": "xt",
+                            "b": {
+                                "action": "xtRes",
+                                "r": -1,
+                                "o": {
+                                    "_cmd": "gameError"
+                                }
+                            }
+                        }) + '\x00';
                     }
                 } else {
-                    response = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"gameError"}]]></body></msg>\x00`;
+                    response = JSON.stringify({
+                        "t": "xt",
+                        "b": {
+                            "action": "xtRes",
+                            "r": -1,
+                            "o": {
+                                "_cmd": "gameError"
+                            }
+                        }
+                    }) + '\x00';
                 }
             } else {
                 // User declined the invitation
                 const battleRoom = battleRooms[battleName];
                 if (battleRoom) {
                     // Send decline notification to the game creator
-                    const declineMsg = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"invitationResponse","battleName":"${battleName}","accepted":false,"player":"${socket.userName}","reason":"${replyReason}"}]]></body></msg>\x00`;
+                    const declineMsg = JSON.stringify({
+                        "t": "xt",
+                        "b": {
+                            "action": "xtRes",
+                            "r": -1,
+                            "o": {
+                                "_cmd": "invitationResponse",
+                                "battleName": battleName,
+                                "accepted": false,
+                                "player": socket.userName,
+                                "reason": replyReason
+                            }
+                        }
+                    }) + '\x00';
 
                     sendMessageToUser(battleRoom.creator, declineMsg);
                 }
 
-                response = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"invitationResponse","battleName":"${battleName}","accepted":false,"reason":"${replyReason}"}]]></body></msg>\x00`;
+                response = JSON.stringify({
+                    "t": "xt",
+                    "b": {
+                        "action": "xtRes",
+                        "r": -1,
+                        "o": {
+                            "_cmd": "invitationResponse",
+                            "battleName": battleName,
+                            "accepted": false,
+                            "reason": replyReason
+                        }
+                    }
+                }) + '\x00';
             }
             break;
 
@@ -281,13 +425,44 @@ function handleGameXtCommand(socket, command, params) {
                 currentBattle.gameSwarmValue = newSwarmValue;
 
                 // Notify other players of the change
-                const swarmValueSetMsg = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"gameSwarmValueSet","battleName":"${currentBattle.name}","gameSwarmValue":${newSwarmValue}}]]></body></msg>\x00`;
+                const swarmValueSetMsg = JSON.stringify({
+                    "t": "xt",
+                    "b": {
+                        "action": "xtRes",
+                        "r": -1,
+                        "o": {
+                            "_cmd": "gameSwarmValueSet",
+                            "battleName": currentBattle.name,
+                            "gameSwarmValue": newSwarmValue
+                        }
+                    }
+                }) + '\x00';
 
                 broadcastToBattle(currentBattle.name, swarmValueSetMsg, socket.playerId);
 
-                response = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"gameSwarmValueSet","battleName":"${currentBattle.name}","gameSwarmValue":${newSwarmValue}}]]></body></msg>\x00`;
+                response = JSON.stringify({
+                    "t": "xt",
+                    "b": {
+                        "action": "xtRes",
+                        "r": -1,
+                        "o": {
+                            "_cmd": "gameSwarmValueSet",
+                            "battleName": currentBattle.name,
+                            "gameSwarmValue": newSwarmValue
+                        }
+                    }
+                }) + '\x00';
             } else {
-                response = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"gameError"}]]></body></msg>\x00`;
+                response = JSON.stringify({
+                    "t": "xt",
+                    "b": {
+                        "action": "xtRes",
+                        "r": -1,
+                        "o": {
+                            "_cmd": "gameError"
+                        }
+                    }
+                }) + '\x00';
             }
             break;
 
@@ -333,18 +508,58 @@ function handleGameXtCommand(socket, command, params) {
                         } else if (totalSwarmValue > gameSwarmValue) {
                             // Swarm exceeds the game limit
                             console.log(`[GAMEXT_LOG] setSwarm rejected - swarm value ${totalSwarmValue} exceeds limit ${gameSwarmValue}`);
-                            response = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"gameError","errorMessage":"Swarm value ${totalSwarmValue} exceeds limit ${gameSwarmValue}"}]]></body></msg>\x00`;
+                            response = JSON.stringify({
+                                "t": "xt",
+                                "b": {
+                                    "action": "xtRes",
+                                    "r": -1,
+                                    "o": {
+                                        "_cmd": "gameError",
+                                        "errorMessage": `Swarm value ${totalSwarmValue} exceeds limit ${gameSwarmValue}`
+                                    }
+                                }
+                            }) + '\x00';
                         } else {
                             // Valid swarm, update the player's swarm
                             activeBattle.players[playerIndex].nanovorSwarm = validNanovorIds;
                             console.log(`[GAMEXT_LOG] setSwarm accepted - user ${socket.userId} set swarm with ${validNanovorIds.length} nanovors (value: ${totalSwarmValue})`);
 
                             const setSwarmUserRefId = clientUserRefId(activeBattle, activeBattle.players[playerIndex]);
-                            const swarmSelectedMsg = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"swarmSelected","battleName":"${activeBattle.name}","swarmCount":${validNanovorIds.length},"swarmValue":${totalSwarmValue},"username":"${socket.userName}","userRefId":"${setSwarmUserRefId}","selectedSwarmIds":${JSON.stringify(validNanovorIds)}}]]></body></msg>\x00`;
+                            const swarmSelectedMsg = JSON.stringify({
+                                "t": "xt",
+                                "b": {
+                                    "action": "xtRes",
+                                    "r": -1,
+                                    "o": {
+                                        "_cmd": "swarmSelected",
+                                        "battleName": activeBattle.name,
+                                        "swarmCount": validNanovorIds.length,
+                                        "swarmValue": totalSwarmValue,
+                                        "username": socket.userName,
+                                        "userRefId": setSwarmUserRefId,
+                                        "selectedSwarmIds": validNanovorIds
+                                    }
+                                }
+                            }) + '\x00';
 
                             broadcastToBattle(activeBattle.name, swarmSelectedMsg, socket.playerId);
 
-                            response = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"swarmSelected","battleName":"${activeBattle.name}","swarmCount":${validNanovorIds.length},"swarmValue":${totalSwarmValue},"username":"${socket.userName}","userRefId":"${setSwarmUserRefId}","selectedSwarmIds":${JSON.stringify(validNanovorIds)}}]]></body></msg>\x00`;
+                            response = JSON.stringify({
+                                "t": "xt",
+                                "b": {
+                                    "action": "xtRes",
+                                    "r": -1,
+                                    "o": {
+                                        "_cmd": "swarmSelected",
+                                        "battleName": activeBattle.name,
+                                        "swarmCount": validNanovorIds.length,
+                                        "swarmValue": totalSwarmValue,
+                                        "username": socket.userName,
+                                        "userRefId": setSwarmUserRefId,
+                                        "selectedSwarmIds": validNanovorIds
+                                    }
+                                }
+                            }) + '\x00';
                         }
                     } else {
                         // User doesn't have inventory data, use basic validation
@@ -352,19 +567,65 @@ function handleGameXtCommand(socket, command, params) {
                         console.log(`[GAMEXT_LOG] setSwarm accepted (no inventory validation) - user ${socket.userId} set swarm with ${nanovorIds.length} nanovors`);
 
                         const setSwarmUserRefId = clientUserRefId(activeBattle, activeBattle.players[playerIndex]);
-                        const swarmSelectedMsg = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"swarmSelected","battleName":"${activeBattle.name}","swarmCount":${nanovorIds.length},"username":"${socket.userName}","userRefId":"${setSwarmUserRefId}","selectedSwarmIds":${JSON.stringify(nanovorIds)}}]]></body></msg>\x00`;
+                        const swarmSelectedMsg = JSON.stringify({
+                            "t": "xt",
+                            "b": {
+                                "action": "xtRes",
+                                "r": -1,
+                                "o": {
+                                    "_cmd": "swarmSelected",
+                                    "battleName": activeBattle.name,
+                                    "swarmCount": nanovorIds.length,
+                                    "username": socket.userName,
+                                    "userRefId": setSwarmUserRefId,
+                                    "selectedSwarmIds": nanovorIds
+                                }
+                            }
+                        }) + '\x00';
 
                         broadcastToBattle(activeBattle.name, swarmSelectedMsg, socket.playerId);
 
-                        response = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"swarmSelected","battleName":"${activeBattle.name}","swarmCount":${nanovorIds.length},"username":"${socket.userName}","userRefId":"${setSwarmUserRefId}","selectedSwarmIds":${JSON.stringify(nanovorIds)}}]]></body></msg>\x00`;
+                        response = JSON.stringify({
+                            "t": "xt",
+                            "b": {
+                                "action": "xtRes",
+                                "r": -1,
+                                "o": {
+                                    "_cmd": "swarmSelected",
+                                    "battleName": activeBattle.name,
+                                    "swarmCount": nanovorIds.length,
+                                    "username": socket.userName,
+                                    "userRefId": setSwarmUserRefId,
+                                    "selectedSwarmIds": nanovorIds
+                                }
+                            }
+                        }) + '\x00';
                     }
                 } else {
                     console.log(`[GAMEXT_LOG] setSwarm failed - user ${socket.userId} not found in battle ${socket.activeBattle}`);
-                    response = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"gameError"}]]></body></msg>\x00`;
+                    response = JSON.stringify({
+                        "t": "xt",
+                        "b": {
+                            "action": "xtRes",
+                            "r": -1,
+                            "o": {
+                                "_cmd": "gameError"
+                            }
+                        }
+                    }) + '\x00';
                 }
             } else {
                 console.log(`[GAMEXT_LOG] setSwarm failed - no active battle for user ${socket.userId}`);
-                response = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"gameError"}]]></body></msg>\x00`;
+                response = JSON.stringify({
+                    "t": "xt",
+                    "b": {
+                        "action": "xtRes",
+                        "r": -1,
+                        "o": {
+                            "_cmd": "gameError"
+                        }
+                    }
+                }) + '\x00';
             }
             break;
 
@@ -378,12 +639,40 @@ function handleGameXtCommand(socket, command, params) {
                 if (playerIndex !== -1) {
                     selectedBattle.players[playerIndex].selectedNanovor = selectedNanovorId;
 
-                    response = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"selectedNanovorSet","nanovorId":${selectedNanovorId}}]]></body></msg>\x00`;
+                    response = JSON.stringify({
+                        "t": "xt",
+                        "b": {
+                            "action": "xtRes",
+                            "r": -1,
+                            "o": {
+                                "_cmd": "selectedNanovorSet",
+                                "nanovorId": selectedNanovorId
+                            }
+                        }
+                    }) + '\x00';
                 } else {
-                    response = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"gameError"}]]></body></msg>\x00`;
+                    response = JSON.stringify({
+                        "t": "xt",
+                        "b": {
+                            "action": "xtRes",
+                            "r": -1,
+                            "o": {
+                                "_cmd": "gameError"
+                            }
+                        }
+                    }) + '\x00';
                 }
             } else {
-                response = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"gameError"}]]></body></msg>\x00`;
+                response = JSON.stringify({
+                    "t": "xt",
+                    "b": {
+                        "action": "xtRes",
+                        "r": -1,
+                        "o": {
+                            "_cmd": "gameError"
+                        }
+                    }
+                }) + '\x00';
             }
             break;
 
@@ -401,19 +690,69 @@ function handleGameXtCommand(socket, command, params) {
                         enemyBattle.players[playerIndex].enemyTarget = enemyBattle.players[targetIndex].id;
 
                         // Send target selected notification to all players
-                        const targetSelectedMsg = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"targetSelected","userRefId":"${socket.playerId}","targetUserRefId":"${enemyBattle.players[targetIndex].id}","attackId":0}]]></body></msg>\x00`;
+                        const targetSelectedMsg = JSON.stringify({
+                            "t": "xt",
+                            "b": {
+                                "action": "xtRes",
+                                "r": -1,
+                                "o": {
+                                    "_cmd": "targetSelected",
+                                    "userRefId": socket.playerId,
+                                    "targetUserRefId": enemyBattle.players[targetIndex].id,
+                                    "attackId": 0
+                                }
+                            }
+                        }) + '\x00';
 
                         broadcastToBattle(enemyBattle.name, targetSelectedMsg);
 
-                        response = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"enemyTargetSet","targetUsername":"${enemyUsername}","targetId":"${enemyBattle.players[targetIndex].id}"}]]></body></msg>\x00`;
+                        response = JSON.stringify({
+                            "t": "xt",
+                            "b": {
+                                "action": "xtRes",
+                                "r": -1,
+                                "o": {
+                                    "_cmd": "enemyTargetSet",
+                                    "targetUsername": enemyUsername,
+                                    "targetId": enemyBattle.players[targetIndex].id
+                                }
+                            }
+                        }) + '\x00';
                     } else {
-                        response = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"gameError"}]]></body></msg>\x00`;
+                        response = JSON.stringify({
+                            "t": "xt",
+                            "b": {
+                                "action": "xtRes",
+                                "r": -1,
+                                "o": {
+                                    "_cmd": "gameError"
+                                }
+                            }
+                        }) + '\x00';
                     }
                 } else {
-                    response = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"gameError"}]]></body></msg>\x00`;
+                    response = JSON.stringify({
+                        "t": "xt",
+                        "b": {
+                            "action": "xtRes",
+                            "r": -1,
+                            "o": {
+                                "_cmd": "gameError"
+                            }
+                        }
+                    }) + '\x00';
                 }
             } else {
-                response = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"gameError"}]]></body></msg>\x00`;
+                response = JSON.stringify({
+                    "t": "xt",
+                    "b": {
+                        "action": "xtRes",
+                        "r": -1,
+                        "o": {
+                            "_cmd": "gameError"
+                        }
+                    }
+                }) + '\x00';
             }
             break;
 
@@ -444,19 +783,71 @@ function handleGameXtCommand(socket, command, params) {
                         attackBattle.battleHistory.push(attackInfo);
 
                         // Send attack performed notification to all players
-                        const attackMsg = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"performAttack","attackResults":{"attackerId":"${socket.playerId}","targetId":"${attackBattle.players[targetIndex].id}","nanovorId":${myNanovorId},"attackId":${setAttackId}}}]]></body></msg>\x00`;
+                        const attackMsg = JSON.stringify({
+                            "t": "xt",
+                            "b": {
+                                "action": "xtRes",
+                                "r": -1,
+                                "o": {
+                                    "_cmd": "performAttack",
+                                    "attackResults": {
+                                        "attackerId": socket.playerId,
+                                        "targetId": attackBattle.players[targetIndex].id,
+                                        "nanovorId": myNanovorId,
+                                        "attackId": setAttackId
+                                    }
+                                }
+                            }
+                        }) + '\x00';
 
                         broadcastToBattle(attackBattle.name, attackMsg);
 
-                        response = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"attackInfoSet","attackId":${setAttackId}}]]></body></msg>\x00`;
+                        response = JSON.stringify({
+                            "t": "xt",
+                            "b": {
+                                "action": "xtRes",
+                                "r": -1,
+                                "o": {
+                                    "_cmd": "attackInfoSet",
+                                    "attackId": setAttackId
+                                }
+                            }
+                        }) + '\x00';
                     } else {
-                        response = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"gameError"}]]></body></msg>\x00`;
+                        response = JSON.stringify({
+                            "t": "xt",
+                            "b": {
+                                "action": "xtRes",
+                                "r": -1,
+                                "o": {
+                                    "_cmd": "gameError"
+                                }
+                            }
+                        }) + '\x00';
                     }
                 } else {
-                    response = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"gameError"}]]></body></msg>\x00`;
+                    response = JSON.stringify({
+                        "t": "xt",
+                        "b": {
+                            "action": "xtRes",
+                            "r": -1,
+                            "o": {
+                                "_cmd": "gameError"
+                            }
+                        }
+                    }) + '\x00';
                 }
             } else {
-                response = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"gameError"}]]></body></msg>\x00`;
+                response = JSON.stringify({
+                    "t": "xt",
+                    "b": {
+                        "action": "xtRes",
+                        "r": -1,
+                        "o": {
+                            "_cmd": "gameError"
+                        }
+                    }
+                }) + '\x00';
             }
             break;
 
@@ -472,13 +863,42 @@ function handleGameXtCommand(socket, command, params) {
                 roundBattle.currentTurn = 0;
 
                 // Send round completed notification to all players
-                const roundCompleteMsg = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"roundCompleted","round":${roundBattle.round}}]]></body></msg>\x00`;
+                const roundCompleteMsg = JSON.stringify({
+                    "t": "xt",
+                    "b": {
+                        "action": "xtRes",
+                        "r": -1,
+                        "o": {
+                            "_cmd": "roundCompleted",
+                            "round": roundBattle.round
+                        }
+                    }
+                }) + '\x00';
 
                 broadcastToBattle(roundBattle.name, roundCompleteMsg);
 
-                response = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"roundEnded","round":${roundBattle.round}}]]></body></msg>\x00`;
+                response = JSON.stringify({
+                    "t": "xt",
+                    "b": {
+                        "action": "xtRes",
+                        "r": -1,
+                        "o": {
+                            "_cmd": "roundEnded",
+                            "round": roundBattle.round
+                        }
+                    }
+                }) + '\x00';
             } else {
-                response = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"gameError"}]]></body></msg>\x00`;
+                response = JSON.stringify({
+                    "t": "xt",
+                    "b": {
+                        "action": "xtRes",
+                        "r": -1,
+                        "o": {
+                            "_cmd": "gameError"
+                        }
+                    }
+                }) + '\x00';
             }
             break;
 
@@ -499,12 +919,34 @@ function handleGameXtCommand(socket, command, params) {
                     console.log(`[GAMEXT_LOG] quitGame - only ${quitBattle.players.length} player left, ending game`);
 
                     // Notify remaining players that the game is over
-                    const gameOverMsg = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"gameOver","winnerId":"${quitBattle.players[0]?.id || ''}","results":"Game ended due to player quit"}]]></body></msg>\x00`;
+                    const gameOverMsg = JSON.stringify({
+                        "t": "xt",
+                        "b": {
+                            "action": "xtRes",
+                            "r": -1,
+                            "o": {
+                                "_cmd": "gameOver",
+                                "winnerId": quitBattle.players[0]?.id || '',
+                                "results": "Game ended due to player quit"
+                            }
+                        }
+                    }) + '\x00';
 
                     broadcastToBattle(quitBattle.name, gameOverMsg);
                 } else {
                     // Notify other players that someone quit
-                    const playerQuitMsg = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"playerQuitGame","userRefId":"${quittingUserId}","username":"${users[quittingUserId]?.username || 'Unknown'}"}]]></body></msg>\x00`;
+                    const playerQuitMsg = JSON.stringify({
+                        "t": "xt",
+                        "b": {
+                            "action": "xtRes",
+                            "r": -1,
+                            "o": {
+                                "_cmd": "playerQuitGame",
+                                "userRefId": quittingUserId,
+                                "username": users[quittingUserId]?.username || 'Unknown'
+                            }
+                        }
+                    }) + '\x00';
                     console.log(`[GAMEXT_LOG] quitGame - notifying other players about user ${quittingUserId} quitting`);
 
                     broadcastToBattle(quitBattle.name, playerQuitMsg);
@@ -516,11 +958,30 @@ function handleGameXtCommand(socket, command, params) {
                 // Update user's status to "online" and notify their buddies
                 updateUserStatus(quittingUserId, 'online');
 
-                response = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"quitGameConfirmed","userRefId":"${quittingUserId}"}]]></body></msg>\x00`;
+                response = JSON.stringify({
+                    "t": "xt",
+                    "b": {
+                        "action": "xtRes",
+                        "r": -1,
+                        "o": {
+                            "_cmd": "quitGameConfirmed",
+                            "userRefId": quittingUserId
+                        }
+                    }
+                }) + '\x00';
                 console.log(`[GAMEXT_LOG] quitGame completed for user ${quittingUserId}`);
             } else {
                 console.log(`[GAMEXT_LOG] quitGame failed - no active battle for user ${socket.userId}`);
-                response = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"gameError"}]]></body></msg>\x00`;
+                response = JSON.stringify({
+                    "t": "xt",
+                    "b": {
+                        "action": "xtRes",
+                        "r": -1,
+                        "o": {
+                            "_cmd": "gameError"
+                        }
+                    }
+                }) + '\x00';
             }
             break;
 
@@ -534,7 +995,17 @@ function handleGameXtCommand(socket, command, params) {
 
             if (cancelBattleName) {
                 // Notify other players in the battle that it's cancelled
-                const cancelMsg = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"gameOver","results":"Game was cancelled by the creator"}]]></body></msg>\x00`;
+                const cancelMsg = JSON.stringify({
+                    "t": "xt",
+                    "b": {
+                        "action": "xtRes",
+                        "r": -1,
+                        "o": {
+                            "_cmd": "gameOver",
+                            "results": "Game was cancelled by the creator"
+                        }
+                    }
+                }) + '\x00';
 
                 broadcastToBattle(cancelBattleName, cancelMsg);
 
@@ -546,9 +1017,27 @@ function handleGameXtCommand(socket, command, params) {
                 // Update user's status to "online" and notify their buddies
                 updateUserStatus(cancelUserId, 'online');
 
-                response = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"quickBattleCancelled"}]]></body></msg>\x00`;
+                response = JSON.stringify({
+                    "t": "xt",
+                    "b": {
+                        "action": "xtRes",
+                        "r": -1,
+                        "o": {
+                            "_cmd": "quickBattleCancelled"
+                        }
+                    }
+                }) + '\x00';
             } else {
-                response = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"gameError"}]]></body></msg>\x00`;
+                response = JSON.stringify({
+                    "t": "xt",
+                    "b": {
+                        "action": "xtRes",
+                        "r": -1,
+                        "o": {
+                            "_cmd": "gameError"
+                        }
+                    }
+                }) + '\x00';
             }
             break;
 
@@ -558,7 +1047,19 @@ function handleGameXtCommand(socket, command, params) {
             const nanovorId = params.nanovorId;
 
             // Return empty badge list for now
-            response = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"badgeList","ownerId":"${ownerId}","nanovorId":"${nanovorId}","badges":[]}]]></body></msg>\x00`;
+            response = JSON.stringify({
+                "t": "xt",
+                "b": {
+                    "action": "xtRes",
+                    "r": -1,
+                    "o": {
+                        "_cmd": "badgeList",
+                        "ownerId": ownerId,
+                        "nanovorId": nanovorId,
+                        "badges": []
+                    }
+                }
+            }) + '\x00';
             break;
 
         case 'startGame':
@@ -579,15 +1080,46 @@ function handleGameXtCommand(socket, command, params) {
                 // Construct game start response properly to avoid JSON injection issues
                 // Manually construct response to ensure _cmd is always present
                 const playersJson = JSON.stringify(playersForClient(startBattle));
-                const gameStartMsg = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"gameStarted","battleName":"${startBattleName}","players":${playersJson},"gameCreator":"${startBattle.creatorName}"}]]></body></msg>\x00`;
+                const gameStartMsg = JSON.stringify({
+                    "t": "xt",
+                    "b": {
+                        "action": "xtRes",
+                        "r": -1,
+                        "o": {
+                            "_cmd": "gameStarted",
+                            "battleName": startBattleName,
+                            "players": JSON.parse(playersJson),
+                            "gameCreator": startBattle.creatorName
+                        }
+                    }
+                }) + '\x00';
 
                 broadcastToBattle(startBattleName, gameStartMsg);
 
-                response = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"gameStarted","battleName":"${startBattleName}"}]]></body></msg>\x00`;
+                response = JSON.stringify({
+                    "t": "xt",
+                    "b": {
+                        "action": "xtRes",
+                        "r": -1,
+                        "o": {
+                            "_cmd": "gameStarted",
+                            "battleName": startBattleName
+                        }
+                    }
+                }) + '\x00';
                 console.log(`[GAMEXT_LOG] startGame completed for battle ${startBattleName}`);
             } else {
                 console.log(`[GAMEXT_LOG] startGame failed - battle ${startBattleName} not found`);
-                response = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"gameError"}]]></body></msg>\x00`;
+                response = JSON.stringify({
+                    "t": "xt",
+                    "b": {
+                        "action": "xtRes",
+                        "r": -1,
+                        "o": {
+                            "_cmd": "gameError"
+                        }
+                    }
+                }) + '\x00';
             }
             break;
 
@@ -597,7 +1129,17 @@ function handleGameXtCommand(socket, command, params) {
 
             // In a real implementation, this would record the player's chosen attack
             // For now, just acknowledge the command
-            response = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"attackSet","attackId":${attackToSet}}]]></body></msg>\x00`;
+            response = JSON.stringify({
+                "t": "xt",
+                "b": {
+                    "action": "xtRes",
+                    "r": -1,
+                    "o": {
+                        "_cmd": "attackSet",
+                        "attackId": attackToSet
+                    }
+                }
+            }) + '\x00';
             break;
 
         case 'setNextSwap':
@@ -611,12 +1153,40 @@ function handleGameXtCommand(socket, command, params) {
                     // Record the swap intention
                     swapBattle.players[playerIndex].nextSwap = nextNanovorId;
 
-                    response = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"nextSwapSet","nanovorId":${nextNanovorId}}]]></body></msg>\x00`;
+                    response = JSON.stringify({
+                        "t": "xt",
+                        "b": {
+                            "action": "xtRes",
+                            "r": -1,
+                            "o": {
+                                "_cmd": "nextSwapSet",
+                                "nanovorId": nextNanovorId
+                            }
+                        }
+                    }) + '\x00';
                 } else {
-                    response = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"gameError"}]]></body></msg>\x00`;
+                    response = JSON.stringify({
+                        "t": "xt",
+                        "b": {
+                            "action": "xtRes",
+                            "r": -1,
+                            "o": {
+                                "_cmd": "gameError"
+                            }
+                        }
+                    }) + '\x00';
                 }
             } else {
-                response = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"gameError"}]]></body></msg>\x00`;
+                response = JSON.stringify({
+                    "t": "xt",
+                    "b": {
+                        "action": "xtRes",
+                        "r": -1,
+                        "o": {
+                            "_cmd": "gameError"
+                        }
+                    }
+                }) + '\x00';
             }
             break;
 
@@ -624,7 +1194,17 @@ function handleGameXtCommand(socket, command, params) {
             // Player declined to watch an ongoing battle
             const declinerId = params.userRefId;
 
-            response = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"declinedToWatchConfirmed","userRefId":"${declinerId}"}]]></body></msg>\x00`;
+            response = JSON.stringify({
+                "t": "xt",
+                "b": {
+                    "action": "xtRes",
+                    "r": -1,
+                    "o": {
+                        "_cmd": "declinedToWatchConfirmed",
+                        "userRefId": declinerId
+                    }
+                }
+            }) + '\x00';
             break;
 
         case 'kickPlayerOut':
@@ -639,7 +1219,17 @@ function handleGameXtCommand(socket, command, params) {
                     const kickedPlayer = kickBattle.players[playerToKickIndex];
 
                     // Send kick notification to the kicked player
-                    const kickMsg = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"playerKickedOut","userRefId":"${kickedPlayer.id}"}]]></body></msg>\x00`;
+                    const kickMsg = JSON.stringify({
+                        "t": "xt",
+                        "b": {
+                            "action": "xtRes",
+                            "r": -1,
+                            "o": {
+                                "_cmd": "playerKickedOut",
+                                "userRefId": kickedPlayer.id
+                            }
+                        }
+                    }) + '\x00';
 
                     sendMessageToUser(kickedPlayer.id, kickMsg);
 
@@ -651,22 +1241,72 @@ function handleGameXtCommand(socket, command, params) {
                         kickBattle.gameState = 'finished';
 
                         // Notify remaining players that the game is over
-                        const gameOverMsg = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"gameOver","winnerId":"${kickBattle.players[0]?.id || ''}","results":"Game ended due to player kick"}]]></body></msg>\x00`;
+                        const gameOverMsg = JSON.stringify({
+                            "t": "xt",
+                            "b": {
+                                "action": "xtRes",
+                                "r": -1,
+                                "o": {
+                                    "_cmd": "gameOver",
+                                    "winnerId": kickBattle.players[0]?.id || '',
+                                    "results": "Game ended due to player kick"
+                                }
+                            }
+                        }) + '\x00';
 
                         broadcastToBattle(kickBattle.name, gameOverMsg);
                     } else {
                         // Notify other players that someone was kicked
-                        const playerKickedMsg = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"playerQuitGame","userRefId":"${kickedPlayer.id}","username":"${kickedPlayer.name}"}]]></body></msg>\x00`;
+                        const playerKickedMsg = JSON.stringify({
+                            "t": "xt",
+                            "b": {
+                                "action": "xtRes",
+                                "r": -1,
+                                "o": {
+                                    "_cmd": "playerQuitGame",
+                                    "userRefId": kickedPlayer.id,
+                                    "username": kickedPlayer.name
+                                }
+                            }
+                        }) + '\x00';
 
                         broadcastToBattle(kickBattle.name, playerKickedMsg);
                     }
 
-                    response = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"playerKickedOut","userRefId":"${kickedPlayer.id}"}]]></body></msg>\x00`;
+                    response = JSON.stringify({
+                        "t": "xt",
+                        "b": {
+                            "action": "xtRes",
+                            "r": -1,
+                            "o": {
+                                "_cmd": "playerKickedOut",
+                                "userRefId": kickedPlayer.id
+                            }
+                        }
+                    }) + '\x00';
                 } else {
-                    response = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"gameError"}]]></body></msg>\x00`;
+                    response = JSON.stringify({
+                        "t": "xt",
+                        "b": {
+                            "action": "xtRes",
+                            "r": -1,
+                            "o": {
+                                "_cmd": "gameError"
+                            }
+                        }
+                    }) + '\x00';
                 }
             } else {
-                response = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"gameError"}]]></body></msg>\x00`;
+                response = JSON.stringify({
+                    "t": "xt",
+                    "b": {
+                        "action": "xtRes",
+                        "r": -1,
+                        "o": {
+                            "_cmd": "gameError"
+                        }
+                    }
+                }) + '\x00';
             }
             break;
 
@@ -696,19 +1336,60 @@ function handleGameXtCommand(socket, command, params) {
                         // Send game started message to all players (include selectedSwarmIds)
                         // Manually construct response to ensure _cmd is always present
                         const playersJson = JSON.stringify(playersForClient(readyBattle));
-                        const gameStartMsg = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"gameStarted","battleName":"${readyBattle.name}","players":${playersJson},"gameCreator":"${readyBattle.creatorName}"}]]></body></msg>\x00`;
+                        const gameStartMsg = JSON.stringify({
+                            "t": "xt",
+                            "b": {
+                                "action": "xtRes",
+                                "r": -1,
+                                "o": {
+                                    "_cmd": "gameStarted",
+                                    "battleName": readyBattle.name,
+                                    "players": JSON.parse(playersJson),
+                                    "gameCreator": readyBattle.creatorName
+                                }
+                            }
+                        }) + '\x00';
 
                         broadcastToBattle(readyBattle.name, gameStartMsg);
                     }
 
-                    response = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"playerReady","userRefId":"${socket.playerId}","ready":true}]]></body></msg>\x00`;
+                    response = JSON.stringify({
+                        "t": "xt",
+                        "b": {
+                            "action": "xtRes",
+                            "r": -1,
+                            "o": {
+                                "_cmd": "playerReady",
+                                "userRefId": socket.playerId,
+                                "ready": true
+                            }
+                        }
+                    }) + '\x00';
                 } else {
                     console.log(`[GAMEXT_LOG] setReady failed - user ${socket.userId} not found in battle ${socket.activeBattle}`);
-                    response = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"gameError"}]]></body></msg>\x00`;
+                    response = JSON.stringify({
+                        "t": "xt",
+                        "b": {
+                            "action": "xtRes",
+                            "r": -1,
+                            "o": {
+                                "_cmd": "gameError"
+                            }
+                        }
+                    }) + '\x00';
                 }
             } else {
                 console.log(`[GAMEXT_LOG] setReady failed - no active battle for user ${socket.userId}`);
-                response = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"gameError"}]]></body></msg>\x00`;
+                response = JSON.stringify({
+                    "t": "xt",
+                    "b": {
+                        "action": "xtRes",
+                        "r": -1,
+                        "o": {
+                            "_cmd": "gameError"
+                        }
+                    }
+                }) + '\x00';
             }
             break;
 
@@ -725,9 +1406,28 @@ function handleGameXtCommand(socket, command, params) {
                     selectedSwarmIds: Array.isArray(p.nanovorSwarm) ? p.nanovorSwarm : []
                 }));
 
-                response = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"playerStatusList","players":${JSON.stringify(playerStatus)}}]}</body></msg>\x00`;
+                response = JSON.stringify({
+                    "t": "xt",
+                    "b": {
+                        "action": "xtRes",
+                        "r": -1,
+                        "o": {
+                            "_cmd": "playerStatusList",
+                            "players": playerStatus
+                        }
+                    }
+                }) + '\x00';
             } else {
-                response = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"gameError"}]]></body></msg>\x00`;
+                response = JSON.stringify({
+                    "t": "xt",
+                    "b": {
+                        "action": "xtRes",
+                        "r": -1,
+                        "o": {
+                            "_cmd": "gameError"
+                        }
+                    }
+                }) + '\x00';
             }
             break;
 
@@ -736,9 +1436,31 @@ function handleGameXtCommand(socket, command, params) {
             const battleStatus = socket.activeBattle ? battleRooms[socket.activeBattle] : null;
 
             if (battleStatus) {
-                response = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"battleStatus","battleName":"${battleStatus.name}","gameState":"${battleStatus.gameState}","currentRound":${battleStatus.round},"playerCount":${battleStatus.players.length}}]}</body></msg>\x00`;
+                response = JSON.stringify({
+                    "t": "xt",
+                    "b": {
+                        "action": "xtRes",
+                        "r": -1,
+                        "o": {
+                            "_cmd": "battleStatus",
+                            "battleName": battleStatus.name,
+                            "gameState": battleStatus.gameState,
+                            "currentRound": battleStatus.round,
+                            "playerCount": battleStatus.players.length
+                        }
+                    }
+                }) + '\x00';
             } else {
-                response = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"gameError"}]]></body></msg>\x00`;
+                response = JSON.stringify({
+                    "t": "xt",
+                    "b": {
+                        "action": "xtRes",
+                        "r": -1,
+                        "o": {
+                            "_cmd": "gameError"
+                        }
+                    }
+                }) + '\x00';
             }
             break;
 
@@ -764,15 +1486,49 @@ function handleGameXtCommand(socket, command, params) {
                 console.log(`[GAMEXT_LOG] performAttack recorded - ${socket.userId} attacked ${targetUserRefId} with nanovor ${attackNanovorId}, attackId: ${attackId}`);
 
                 // Send attack notification to all players
-                const attackMsg = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"performAttack","attackResults":{"attackerId":"${socket.playerId}","targetId":"${targetUserRefId}","nanovorId":${attackNanovorId},"attackId":${attackId}}}]]></body></msg>\x00`;
+                const attackMsg = JSON.stringify({
+                    "t": "xt",
+                    "b": {
+                        "action": "xtRes",
+                        "r": -1,
+                        "o": {
+                            "_cmd": "performAttack",
+                            "attackResults": {
+                                "attackerId": socket.playerId,
+                                "targetId": targetUserRefId,
+                                "nanovorId": attackNanovorId,
+                                "attackId": attackId
+                            }
+                        }
+                    }
+                }) + '\x00';
 
                 broadcastToBattle(performAttackBattle.name, attackMsg);
 
-                response = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"attackPerformed","attackId":${attackId}}]]></body></msg>\x00`;
+                response = JSON.stringify({
+                    "t": "xt",
+                    "b": {
+                        "action": "xtRes",
+                        "r": -1,
+                        "o": {
+                            "_cmd": "attackPerformed",
+                            "attackId": attackId
+                        }
+                    }
+                }) + '\x00';
                 console.log(`[GAMEXT_LOG] performAttack completed successfully`);
             } else {
                 console.log(`[GAMEXT_LOG] performAttack failed - no active battle for user ${socket.userId}`);
-                response = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"gameError"}]]></body></msg>\x00`;
+                response = JSON.stringify({
+                    "t": "xt",
+                    "b": {
+                        "action": "xtRes",
+                        "r": -1,
+                        "o": {
+                            "_cmd": "gameError"
+                        }
+                    }
+                }) + '\x00';
             }
             break;
 
@@ -788,16 +1544,55 @@ function handleGameXtCommand(socket, command, params) {
                     swapNanovorBattle.players[playerIndex].selectedNanovor = newNanovorId;
 
                     // Notify all players about the swap
-                    const swapMsg = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"swapNanovor","userRefId":"${socket.playerId}","newNanovorId":${newNanovorId}}]]></body></msg>\x00`;
+                    const swapMsg = JSON.stringify({
+                        "t": "xt",
+                        "b": {
+                            "action": "xtRes",
+                            "r": -1,
+                            "o": {
+                                "_cmd": "swapNanovor",
+                                "userRefId": socket.playerId,
+                                "newNanovorId": newNanovorId
+                            }
+                        }
+                    }) + '\x00';
 
                     broadcastToBattle(swapNanovorBattle.name, swapMsg);
 
-                    response = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"nanovorSwapped","newNanovorId":${newNanovorId}}]]></body></msg>\x00`;
+                    response = JSON.stringify({
+                        "t": "xt",
+                        "b": {
+                            "action": "xtRes",
+                            "r": -1,
+                            "o": {
+                                "_cmd": "nanovorSwapped",
+                                "newNanovorId": newNanovorId
+                            }
+                        }
+                    }) + '\x00';
                 } else {
-                    response = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"gameError"}]]></body></msg>\x00`;
+                    response = JSON.stringify({
+                        "t": "xt",
+                        "b": {
+                            "action": "xtRes",
+                            "r": -1,
+                            "o": {
+                                "_cmd": "gameError"
+                            }
+                        }
+                    }) + '\x00';
                 }
             } else {
-                response = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"gameError"}]]></body></msg>\x00`;
+                response = JSON.stringify({
+                    "t": "xt",
+                    "b": {
+                        "action": "xtRes",
+                        "r": -1,
+                        "o": {
+                            "_cmd": "gameError"
+                        }
+                    }
+                }) + '\x00';
             }
             break;
 
@@ -809,13 +1604,43 @@ function handleGameXtCommand(socket, command, params) {
 
             if (killBattle) {
                 // Notify all players about the nanovor death
-                const killMsg = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"killNanovor","nanovorId":${killedNanovorId},"killerId":"${killerId}"}]]></body></msg>\x00`;
+                const killMsg = JSON.stringify({
+                    "t": "xt",
+                    "b": {
+                        "action": "xtRes",
+                        "r": -1,
+                        "o": {
+                            "_cmd": "killNanovor",
+                            "nanovorId": killedNanovorId,
+                            "killerId": killerId
+                        }
+                    }
+                }) + '\x00';
 
                 broadcastToBattle(killBattle.name, killMsg);
 
-                response = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"nanovorKilled","nanovorId":${killedNanovorId}}]]></body></msg>\x00`;
+                response = JSON.stringify({
+                    "t": "xt",
+                    "b": {
+                        "action": "xtRes",
+                        "r": -1,
+                        "o": {
+                            "_cmd": "nanovorKilled",
+                            "nanovorId": killedNanovorId
+                        }
+                    }
+                }) + '\x00';
             } else {
-                response = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"gameError"}]]></body></msg>\x00`;
+                response = JSON.stringify({
+                    "t": "xt",
+                    "b": {
+                        "action": "xtRes",
+                        "r": -1,
+                        "o": {
+                            "_cmd": "gameError"
+                        }
+                    }
+                }) + '\x00';
             }
             break;
 
@@ -826,13 +1651,42 @@ function handleGameXtCommand(socket, command, params) {
 
             if (blockBattle) {
                 // Notify all players about the swap block
-                const blockMsg = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"blockSwap","blockerId":"${blockerId}"}]]></body></msg>\x00`;
+                const blockMsg = JSON.stringify({
+                    "t": "xt",
+                    "b": {
+                        "action": "xtRes",
+                        "r": -1,
+                        "o": {
+                            "_cmd": "blockSwap",
+                            "blockerId": blockerId
+                        }
+                    }
+                }) + '\x00';
 
                 broadcastToBattle(blockBattle.name, blockMsg);
 
-                response = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"swapBlocked","blockerId":"${blockerId}"}]]></body></msg>\x00`;
+                response = JSON.stringify({
+                    "t": "xt",
+                    "b": {
+                        "action": "xtRes",
+                        "r": -1,
+                        "o": {
+                            "_cmd": "swapBlocked",
+                            "blockerId": blockerId
+                        }
+                    }
+                }) + '\x00';
             } else {
-                response = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"gameError"}]]></body></msg>\x00`;
+                response = JSON.stringify({
+                    "t": "xt",
+                    "b": {
+                        "action": "xtRes",
+                        "r": -1,
+                        "o": {
+                            "_cmd": "gameError"
+                        }
+                    }
+                }) + '\x00';
             }
             break;
 
@@ -847,16 +1701,55 @@ function handleGameXtCommand(socket, command, params) {
                     selectBattle.players[playerIndex].selectedNanovor = selectNanovorId;
 
                     // Notify all players about the selection
-                    const selectMsg = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"selectNanovor","userRefId":"${socket.playerId}","nanovorId":${selectNanovorId}}]]></body></msg>\x00`;
+                    const selectMsg = JSON.stringify({
+                        "t": "xt",
+                        "b": {
+                            "action": "xtRes",
+                            "r": -1,
+                            "o": {
+                                "_cmd": "selectNanovor",
+                                "userRefId": socket.playerId,
+                                "nanovorId": selectNanovorId
+                            }
+                        }
+                    }) + '\x00';
 
                     broadcastToBattle(selectBattle.name, selectMsg);
 
-                    response = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"nanovorSelected","nanovorId":${selectNanovorId}}]]></body></msg>\x00`;
+                    response = JSON.stringify({
+                        "t": "xt",
+                        "b": {
+                            "action": "xtRes",
+                            "r": -1,
+                            "o": {
+                                "_cmd": "nanovorSelected",
+                                "nanovorId": selectNanovorId
+                            }
+                        }
+                    }) + '\x00';
                 } else {
-                    response = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"gameError"}]]></body></msg>\x00`;
+                    response = JSON.stringify({
+                        "t": "xt",
+                        "b": {
+                            "action": "xtRes",
+                            "r": -1,
+                            "o": {
+                                "_cmd": "gameError"
+                            }
+                        }
+                    }) + '\x00';
                 }
             } else {
-                response = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"gameError"}]]></body></msg>\x00`;
+                response = JSON.stringify({
+                    "t": "xt",
+                    "b": {
+                        "action": "xtRes",
+                        "r": -1,
+                        "o": {
+                            "_cmd": "gameError"
+                        }
+                    }
+                }) + '\x00';
             }
             break;
 
@@ -871,7 +1764,14 @@ function handleGameXtCommand(socket, command, params) {
 
                 // Client expects { _cmd, players, roundCounter } at top level so RoundInfo(param1) sees param1.players
                 const setRoundPayload = Object.assign({ _cmd: 'setRoundInfo' }, roundInfo);
-                const roundInfoMsg = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[${JSON.stringify(setRoundPayload)}]]></body></msg>\x00`;
+                const roundInfoMsg = JSON.stringify({
+                    "t": "xt",
+                    "b": {
+                        "action": "xtRes",
+                        "r": -1,
+                        "o": setRoundPayload
+                    }
+                }) + '\x00';
 
                 broadcastToBattle(roundInfoBattle.name, roundInfoMsg);
 
@@ -880,9 +1780,25 @@ function handleGameXtCommand(socket, command, params) {
                     "_cmd": "roundInfoSet",
                     "round": roundInfoBattle.round
                 };
-                response = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[${JSON.stringify(roundInfoResponse)}]]></body></msg>\x00`;
+                response = JSON.stringify({
+                    "t": "xt",
+                    "b": {
+                        "action": "xtRes",
+                        "r": -1,
+                        "o": roundInfoResponse
+                    }
+                }) + '\x00';
             } else {
-                response = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"gameError"}]]></body></msg>\x00`;
+                response = JSON.stringify({
+                    "t": "xt",
+                    "b": {
+                        "action": "xtRes",
+                        "r": -1,
+                        "o": {
+                            "_cmd": "gameError"
+                        }
+                    }
+                }) + '\x00';
             }
             break;
 
@@ -893,13 +1809,42 @@ function handleGameXtCommand(socket, command, params) {
 
             if (resultsBattle) {
                 // Notify all players about the game results
-                const resultsMsg = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"showGameResults","results":${JSON.stringify(gameResults)}}]}</body></msg>\x00`;
+                const resultsMsg = JSON.stringify({
+                    "t": "xt",
+                    "b": {
+                        "action": "xtRes",
+                        "r": -1,
+                        "o": {
+                            "_cmd": "showGameResults",
+                            "results": gameResults
+                        }
+                    }
+                }) + '\x00';
 
                 broadcastToBattle(resultsBattle.name, resultsMsg);
 
-                response = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"gameResultsShown","battleName":"${resultsBattle.name}"}]]></body></msg>\x00`;
+                response = JSON.stringify({
+                    "t": "xt",
+                    "b": {
+                        "action": "xtRes",
+                        "r": -1,
+                        "o": {
+                            "_cmd": "gameResultsShown",
+                            "battleName": resultsBattle.name
+                        }
+                    }
+                }) + '\x00';
             } else {
-                response = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"gameError"}]]></body></msg>\x00`;
+                response = JSON.stringify({
+                    "t": "xt",
+                    "b": {
+                        "action": "xtRes",
+                        "r": -1,
+                        "o": {
+                            "_cmd": "gameError"
+                        }
+                    }
+                }) + '\x00';
             }
             break;
 
@@ -919,12 +1864,34 @@ function handleGameXtCommand(socket, command, params) {
                     console.log(`[GAMEXT_LOG] gameQuit - only ${gameQuitBattle.players.length} player left, ending game`);
 
                     // Notify remaining players that the game is over
-                    const gameOverMsg = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"gameOver","winnerId":"${gameQuitBattle.players[0]?.id || ''}","results":"Game ended due to player quit"}]]></body></msg>\x00`;
+                    const gameOverMsg = JSON.stringify({
+                        "t": "xt",
+                        "b": {
+                            "action": "xtRes",
+                            "r": -1,
+                            "o": {
+                                "_cmd": "gameOver",
+                                "winnerId": gameQuitBattle.players[0]?.id || '',
+                                "results": "Game ended due to player quit"
+                            }
+                        }
+                    }) + '\x00';
 
                     broadcastToBattle(gameQuitBattle.name, gameOverMsg);
                 } else {
                     // Notify other players that someone quit
-                    const playerQuitMsg = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"playerQuitGame","userRefId":"${socket.playerId}","username":"${users[socket.userId]?.username || 'Unknown'}"}]]></body></msg>\x00`;
+                    const playerQuitMsg = JSON.stringify({
+                        "t": "xt",
+                        "b": {
+                            "action": "xtRes",
+                            "r": -1,
+                            "o": {
+                                "_cmd": "playerQuitGame",
+                                "userRefId": socket.playerId,
+                                "username": users[socket.userId]?.username || 'Unknown'
+                            }
+                        }
+                    }) + '\x00';
                     console.log(`[GAMEXT_LOG] gameQuit - notifying other players about user ${socket.userId} quitting`);
 
                     broadcastToBattle(gameQuitBattle.name, playerQuitMsg);
@@ -936,11 +1903,30 @@ function handleGameXtCommand(socket, command, params) {
                 // Update user's status to "online" and notify their buddies
                 updateUserStatus(socket.playerId, 'online');
 
-                response = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"gameQuitConfirmed","userRefId":"${socket.playerId}"}]]></body></msg>\x00`;
+                response = JSON.stringify({
+                    "t": "xt",
+                    "b": {
+                        "action": "xtRes",
+                        "r": -1,
+                        "o": {
+                            "_cmd": "gameQuitConfirmed",
+                            "userRefId": socket.playerId
+                        }
+                    }
+                }) + '\x00';
                 console.log(`[GAMEXT_LOG] gameQuit completed for user ${socket.userId}`);
             } else {
                 console.log(`[GAMEXT_LOG] gameQuit failed - no active battle for user ${socket.userId}`);
-                response = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"gameError"}]]></body></msg>\x00`;
+                response = JSON.stringify({
+                    "t": "xt",
+                    "b": {
+                        "action": "xtRes",
+                        "r": -1,
+                        "o": {
+                            "_cmd": "gameError"
+                        }
+                    }
+                }) + '\x00';
             }
             break;
 
@@ -1015,7 +2001,6 @@ function handleGameXtCommand(socket, command, params) {
             finalAutoBattle.players.forEach((p, idx) => { ensureDefaultSwarmForPlayer(finalAutoBattle, idx); });
 
             const senseiBattle = isSenseiBattle(finalAutoBattle);
-            const senseiPayload = senseiBattle ? ',"isSenseiBattle":true' : '';
             const playersJson = JSON.stringify(playersForClient(finalAutoBattle));
 
             // Client expects playerJoinAutoBattle BEFORE gameStarted: battleStarted() uses _battleName and _gameCreator set by playerJoinAutoBattle(). Send in that order.
@@ -1034,7 +2019,14 @@ function handleGameXtCommand(socket, command, params) {
             if (senseiBattle) {
                 joinAutoResponse.isSenseiBattle = true;
             }
-            const joinAutoMsg = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[${JSON.stringify(joinAutoResponse)}]]></body></msg>\x00`;
+            const joinAutoMsg = JSON.stringify({
+                "t": "xt",
+                "b": {
+                    "action": "xtRes",
+                    "r": -1,
+                    "o": joinAutoResponse
+                }
+            }) + '\x00';
             broadcastToBattle(autoBattleName, joinAutoMsg);
 
             console.log(`[GAMEXT_LOG] gameStarted players (joinUserRefId=${joinUserRefId}):`, playersJson);
@@ -1049,7 +2041,14 @@ function handleGameXtCommand(socket, command, params) {
             if (senseiBattle) {
                 gameStartResponse.isSenseiBattle = true;
             }
-            const gameStartMsg = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[${JSON.stringify(gameStartResponse)}]]></body></msg>\x00`;
+            const gameStartMsg = JSON.stringify({
+                "t": "xt",
+                "b": {
+                    "action": "xtRes",
+                    "r": -1,
+                    "o": gameStartResponse
+                }
+            }) + '\x00';
             broadcastToBattle(autoBattleName, gameStartMsg);
 
             // Response: joinedAutoBattle so client does not get gameStarted twice. Client gets both from broadcast in correct order.
@@ -1062,7 +2061,14 @@ function handleGameXtCommand(socket, command, params) {
             if (senseiBattle) {
                 joinedAutoResponse.isSenseiBattle = true;
             }
-            response = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[${JSON.stringify(joinedAutoResponse)}]]></body></msg>\x00`;
+            response = JSON.stringify({
+                "t": "xt",
+                "b": {
+                    "action": "xtRes",
+                    "r": -1,
+                    "o": joinedAutoResponse
+                }
+            }) + '\x00';
             break;
 
         case 'allPlayersReady':
@@ -1081,19 +2087,66 @@ function handleGameXtCommand(socket, command, params) {
                     readyCheckBattle.turnOrder = [...readyCheckBattle.players];
                     readyCheckBattle.players.forEach((p, idx) => { ensureDefaultSwarmForPlayer(readyCheckBattle, idx); });
 
-                    const senseiPayload = isSenseiBattle(readyCheckBattle) ? ',"isSenseiBattle":true' : '';
+                    const senseiBattle = isSenseiBattle(readyCheckBattle);
                     const readyPlayersJson = JSON.stringify(playersForClient(readyCheckBattle));
                     console.log(`[GAMEXT_LOG] allPlayersReady gameStarted players:`, readyPlayersJson);
-                    const gameStartMsg = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"gameStarted","battleName":"${readyCheckBattle.name}","players":${readyPlayersJson},"gameCreator":"${readyCheckBattle.creatorName}"${senseiPayload}}]]></body></msg>\x00`;
+                    
+                    const gameStartMsgData = {
+                        "_cmd": "gameStarted",
+                        "battleName": readyCheckBattle.name,
+                        "players": JSON.parse(readyPlayersJson),
+                        "gameCreator": readyCheckBattle.creatorName
+                    };
+                    if (senseiBattle) {
+                        gameStartMsgData.isSenseiBattle = true;
+                    }
+                    
+                    const gameStartMsg = JSON.stringify({
+                        "t": "xt",
+                        "b": {
+                            "action": "xtRes",
+                            "r": -1,
+                            "o": gameStartMsgData
+                        }
+                    }) + '\x00';
 
                     broadcastToBattle(readyCheckBattle.name, gameStartMsg);
 
-                    response = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"allPlayersReady","battleStarted":true}]]></body></msg>\x00`;
+                    response = JSON.stringify({
+                        "t": "xt",
+                        "b": {
+                            "action": "xtRes",
+                            "r": -1,
+                            "o": {
+                                "_cmd": "allPlayersReady",
+                                "battleStarted": true
+                            }
+                        }
+                    }) + '\x00';
                 } else {
-                    response = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"allPlayersReady","battleStarted":false}]]></body></msg>\x00`;
+                    response = JSON.stringify({
+                        "t": "xt",
+                        "b": {
+                            "action": "xtRes",
+                            "r": -1,
+                            "o": {
+                                "_cmd": "allPlayersReady",
+                                "battleStarted": false
+                            }
+                        }
+                    }) + '\x00';
                 }
             } else {
-                response = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"gameError"}]]></body></msg>\x00`;
+                response = JSON.stringify({
+                    "t": "xt",
+                    "b": {
+                        "action": "xtRes",
+                        "r": -1,
+                        "o": {
+                            "_cmd": "gameError"
+                        }
+                    }
+                }) + '\x00';
             }
             break;
 
@@ -1105,13 +2158,45 @@ function handleGameXtCommand(socket, command, params) {
                 waitingBattle.gameState = 'waiting_for_players';
 
                 // Notify all players that we're waiting for more players
-                const waitingMsg = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"waitingForPlayers","battleName":"${waitingBattle.name}","currentPlayers":${waitingBattle.players.length},"maxPlayers":${waitingBattle.maxPlayers}}]}</body></msg>\x00`;
+                const waitingMsg = JSON.stringify({
+                    "t": "xt",
+                    "b": {
+                        "action": "xtRes",
+                        "r": -1,
+                        "o": {
+                            "_cmd": "waitingForPlayers",
+                            "battleName": waitingBattle.name,
+                            "currentPlayers": waitingBattle.players.length,
+                            "maxPlayers": waitingBattle.maxPlayers
+                        }
+                    }
+                }) + '\x00';
 
                 broadcastToBattle(waitingBattle.name, waitingMsg);
 
-                response = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"waitingForPlayers","battleName":"${waitingBattle.name}","currentPlayers":${waitingBattle.players.length}}]}</body></msg>\x00`;
+                response = JSON.stringify({
+                    "t": "xt",
+                    "b": {
+                        "action": "xtRes",
+                        "r": -1,
+                        "o": {
+                            "_cmd": "waitingForPlayers",
+                            "battleName": waitingBattle.name,
+                            "currentPlayers": waitingBattle.players.length
+                        }
+                    }
+                }) + '\x00';
             } else {
-                response = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"gameError"}]]></body></msg>\x00`;
+                response = JSON.stringify({
+                    "t": "xt",
+                    "b": {
+                        "action": "xtRes",
+                        "r": -1,
+                        "o": {
+                            "_cmd": "gameError"
+                        }
+                    }
+                }) + '\x00';
             }
             break;
 
@@ -1137,19 +2222,46 @@ function handleGameXtCommand(socket, command, params) {
                 if (isSenseiBattle(startedBattle)) {
                     gameStartResponse.isSenseiBattle = true;
                 }
-                const gameStartMsg = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[${JSON.stringify(gameStartResponse)}]]></body></msg>\x00`;
+                const gameStartMsg = JSON.stringify({
+                    "t": "xt",
+                    "b": {
+                        "action": "xtRes",
+                        "r": -1,
+                        "o": gameStartResponse
+                    }
+                }) + '\x00';
 
                 broadcastToBattle(startedBattle.name, gameStartMsg);
 
                 // Manually construct response to ensure _cmd is always present
                 const playersJson = JSON.stringify(playersForClient(startedBattle));
-                let responseJson = `{"_cmd":"gameStarted","battleName":"${startedBattle.name}","players":${playersJson}}`;
+                const responseObj = {
+                    "_cmd": "gameStarted",
+                    "battleName": startedBattle.name,
+                    "players": JSON.parse(playersJson)
+                };
                 if (isSenseiBattle(startedBattle)) {
-                    responseJson = `{"_cmd":"gameStarted","battleName":"${startedBattle.name}","players":${playersJson},"isSenseiBattle":true}`;
+                    responseObj.isSenseiBattle = true;
                 }
-                response = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[${responseJson}]]></body></msg>\x00`;
+                response = JSON.stringify({
+                    "t": "xt",
+                    "b": {
+                        "action": "xtRes",
+                        "r": -1,
+                        "o": responseObj
+                    }
+                }) + '\x00';
             } else {
-                response = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"gameError"}]]></body></msg>\x00`;
+                response = JSON.stringify({
+                    "t": "xt",
+                    "b": {
+                        "action": "xtRes",
+                        "r": -1,
+                        "o": {
+                            "_cmd": "gameError"
+                        }
+                    }
+                }) + '\x00';
             }
             break;
 
@@ -1162,13 +2274,44 @@ function handleGameXtCommand(socket, command, params) {
                 swarmValueBattle.gameSwarmValue = swarmValue;
 
                 // Notify other players of the change
-                const swarmValueSetMsg = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"gameSwarmValueSet","battleName":"${swarmValueBattle.name}","gameSwarmValue":${swarmValue}}]}</body></msg>\x00`;
+                const swarmValueSetMsg = JSON.stringify({
+                    "t": "xt",
+                    "b": {
+                        "action": "xtRes",
+                        "r": -1,
+                        "o": {
+                            "_cmd": "gameSwarmValueSet",
+                            "battleName": swarmValueBattle.name,
+                            "gameSwarmValue": swarmValue
+                        }
+                    }
+                }) + '\x00';
 
                 broadcastToBattle(swarmValueBattle.name, swarmValueSetMsg, socket.playerId);
 
-                response = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"gameSwarmValueSet","battleName":"${swarmValueBattle.name}","gameSwarmValue":${swarmValue}}]}</body></msg>\x00`;
+                response = JSON.stringify({
+                    "t": "xt",
+                    "b": {
+                        "action": "xtRes",
+                        "r": -1,
+                        "o": {
+                            "_cmd": "gameSwarmValueSet",
+                            "battleName": swarmValueBattle.name,
+                            "gameSwarmValue": swarmValue
+                        }
+                    }
+                }) + '\x00';
             } else {
-                response = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"gameError"}]]></body></msg>\x00`;
+                response = JSON.stringify({
+                    "t": "xt",
+                    "b": {
+                        "action": "xtRes",
+                        "r": -1,
+                        "o": {
+                            "_cmd": "gameError"
+                        }
+                    }
+                }) + '\x00';
             }
             break;
 
@@ -1181,13 +2324,48 @@ function handleGameXtCommand(socket, command, params) {
 
             if (swarmSelectBattle) {
                 // Notify other players that this player has set their swarm
-                const swarmSelectedMsg = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"swarmSelected","battleName":"${swarmSelectBattle.name}","swarmCount":${swarmCount},"username":"${username}","userRefId":"${userRefId}"}]]></body></msg>\x00`;
+                const swarmSelectedMsg = JSON.stringify({
+                    "t": "xt",
+                    "b": {
+                        "action": "xtRes",
+                        "r": -1,
+                        "o": {
+                            "_cmd": "swarmSelected",
+                            "battleName": swarmSelectBattle.name,
+                            "swarmCount": swarmCount,
+                            "username": username,
+                            "userRefId": userRefId
+                        }
+                    }
+                }) + '\x00';
 
                 broadcastToBattle(swarmSelectBattle.name, swarmSelectedMsg, socket.playerId);
 
-                response = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"swarmSelected","battleName":"${swarmSelectBattle.name}","swarmCount":${swarmCount},"username":"${username}","userRefId":"${userRefId}"}]]></body></msg>\x00`;
+                response = JSON.stringify({
+                    "t": "xt",
+                    "b": {
+                        "action": "xtRes",
+                        "r": -1,
+                        "o": {
+                            "_cmd": "swarmSelected",
+                            "battleName": swarmSelectBattle.name,
+                            "swarmCount": swarmCount,
+                            "username": username,
+                            "userRefId": userRefId
+                        }
+                    }
+                }) + '\x00';
             } else {
-                response = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"gameError"}]]></body></msg>\x00`;
+                response = JSON.stringify({
+                    "t": "xt",
+                    "b": {
+                        "action": "xtRes",
+                        "r": -1,
+                        "o": {
+                            "_cmd": "gameError"
+                        }
+                    }
+                }) + '\x00';
             }
             break;
 
@@ -1206,13 +2384,46 @@ function handleGameXtCommand(socket, command, params) {
                 }
 
                 // Send target selected notification to all players
-                const targetSelectedMsg = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"targetSelected","userRefId":"${userRefIdTarget}","targetUserRefId":"${selectedTargetUserRefId}","attackId":${attackIdTarget}}]}</body></msg>\x00`;
+                const targetSelectedMsg = JSON.stringify({
+                    "t": "xt",
+                    "b": {
+                        "action": "xtRes",
+                        "r": -1,
+                        "o": {
+                            "_cmd": "targetSelected",
+                            "userRefId": userRefIdTarget,
+                            "targetUserRefId": selectedTargetUserRefId,
+                            "attackId": attackIdTarget
+                        }
+                    }
+                }) + '\x00';
 
                 broadcastToBattle(targetSelectBattle.name, targetSelectedMsg);
 
-                response = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"targetSelected","userRefId":"${userRefIdTarget}","targetUserRefId":"${selectedTargetUserRefId}","attackId":${attackIdTarget}}]}</body></msg>\x00`;
+                response = JSON.stringify({
+                    "t": "xt",
+                    "b": {
+                        "action": "xtRes",
+                        "r": -1,
+                        "o": {
+                            "_cmd": "targetSelected",
+                            "userRefId": userRefIdTarget,
+                            "targetUserRefId": selectedTargetUserRefId,
+                            "attackId": attackIdTarget
+                        }
+                    }
+                }) + '\x00';
             } else {
-                response = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"gameError"}]]></body></msg>\x00`;
+                response = JSON.stringify({
+                    "t": "xt",
+                    "b": {
+                        "action": "xtRes",
+                        "r": -1,
+                        "o": {
+                            "_cmd": "gameError"
+                        }
+                    }
+                }) + '\x00';
             }
             break;
 
@@ -1224,13 +2435,46 @@ function handleGameXtCommand(socket, command, params) {
 
             if (turnBattle) {
                 // Send ready for turn notification to the player
-                const readyForTurnMsg = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"readyForTurn","battleName":"${turnBattle.name}","nanovorId":${nanovorIdTurn},"isDead":${isDead}}]}</body></msg>\x00`;
+                const readyForTurnMsg = JSON.stringify({
+                    "t": "xt",
+                    "b": {
+                        "action": "xtRes",
+                        "r": -1,
+                        "o": {
+                            "_cmd": "readyForTurn",
+                            "battleName": turnBattle.name,
+                            "nanovorId": nanovorIdTurn,
+                            "isDead": isDead
+                        }
+                    }
+                }) + '\x00';
 
                 socket.write(readyForTurnMsg);
 
-                response = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"readyForTurn","battleName":"${turnBattle.name}","nanovorId":${nanovorIdTurn},"isDead":${isDead}}]}</body></msg>\x00`;
+                response = JSON.stringify({
+                    "t": "xt",
+                    "b": {
+                        "action": "xtRes",
+                        "r": -1,
+                        "o": {
+                            "_cmd": "readyForTurn",
+                            "battleName": turnBattle.name,
+                            "nanovorId": nanovorIdTurn,
+                            "isDead": isDead
+                        }
+                    }
+                }) + '\x00';
             } else {
-                response = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"gameError"}]]></body></msg>\x00`;
+                response = JSON.stringify({
+                    "t": "xt",
+                    "b": {
+                        "action": "xtRes",
+                        "r": -1,
+                        "o": {
+                            "_cmd": "gameError"
+                        }
+                    }
+                }) + '\x00';
             }
             break;
 
@@ -1247,13 +2491,42 @@ function handleGameXtCommand(socket, command, params) {
                 roundCompleteBattle.currentTurn = 0;
 
                 // Send round completed notification to all players
-                const roundCompleteMsg = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"roundCompleted","round":${roundCompleteBattle.round}}]}</body></msg>\x00`;
+                const roundCompleteMsg = JSON.stringify({
+                    "t": "xt",
+                    "b": {
+                        "action": "xtRes",
+                        "r": -1,
+                        "o": {
+                            "_cmd": "roundCompleted",
+                            "round": roundCompleteBattle.round
+                        }
+                    }
+                }) + '\x00';
 
                 broadcastToBattle(roundCompleteBattle.name, roundCompleteMsg);
 
-                response = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"roundCompleted","round":${roundCompleteBattle.round}}]}</body></msg>\x00`;
+                response = JSON.stringify({
+                    "t": "xt",
+                    "b": {
+                        "action": "xtRes",
+                        "r": -1,
+                        "o": {
+                            "_cmd": "roundCompleted",
+                            "round": roundCompleteBattle.round
+                        }
+                    }
+                }) + '\x00';
             } else {
-                response = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"gameError"}]]></body></msg>\x00`;
+                response = JSON.stringify({
+                    "t": "xt",
+                    "b": {
+                        "action": "xtRes",
+                        "r": -1,
+                        "o": {
+                            "_cmd": "gameError"
+                        }
+                    }
+                }) + '\x00';
             }
             break;
 
@@ -1272,19 +2545,61 @@ function handleGameXtCommand(socket, command, params) {
                     quitGameBattle.gameState = 'finished';
 
                     // Notify remaining players that the game is over
-                    const gameOverMsg = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"gameOver","winnerId":"${quitGameBattle.players[0]?.id || ''}","results":"Game ended due to player quit"}]]></body></msg>\x00`;
+                    const gameOverMsg = JSON.stringify({
+                        "t": "xt",
+                        "b": {
+                            "action": "xtRes",
+                            "r": -1,
+                            "o": {
+                                "_cmd": "gameOver",
+                                "winnerId": quitGameBattle.players[0]?.id || '',
+                                "results": "Game ended due to player quit"
+                            }
+                        }
+                    }) + '\x00';
 
                     broadcastToBattle(quitGameBattle.name, gameOverMsg);
                 } else {
                     // Notify other players that someone quit
-                    const playerQuitMsg = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"playerQuitGame","userRefId":"${quitUserId}","username":"${quitUsername}"}]]></body></msg>\x00`;
+                    const playerQuitMsg = JSON.stringify({
+                        "t": "xt",
+                        "b": {
+                            "action": "xtRes",
+                            "r": -1,
+                            "o": {
+                                "_cmd": "playerQuitGame",
+                                "userRefId": quitUserId,
+                                "username": quitUsername
+                            }
+                        }
+                    }) + '\x00';
 
                     broadcastToBattle(quitGameBattle.name, playerQuitMsg);
                 }
 
-                response = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"playerQuitConfirmed","userRefId":"${quitUserId}","username":"${quitUsername}"}]]></body></msg>\x00`;
+                response = JSON.stringify({
+                    "t": "xt",
+                    "b": {
+                        "action": "xtRes",
+                        "r": -1,
+                        "o": {
+                            "_cmd": "playerQuitConfirmed",
+                            "userRefId": quitUserId,
+                            "username": quitUsername
+                        }
+                    }
+                }) + '\x00';
             } else {
-                response = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"gameError"}]]></body></msg>\x00`;
+                response = JSON.stringify({
+                    "t": "xt",
+                    "b": {
+                        "action": "xtRes",
+                        "r": -1,
+                        "o": {
+                            "_cmd": "gameError"
+                        }
+                    }
+                }) + '\x00';
             }
             break;
 
@@ -1300,7 +2615,18 @@ function handleGameXtCommand(socket, command, params) {
                 console.log(`[GAMEXT_LOG] gameOver - battle ${gameOverBattle.name} finished, winner: ${winnerId}, results: ${results}`);
 
                 // Notify all players that the game is over
-                const gameOverMsg = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"gameOver","winnerId":"${winnerId}","results":"${results}"}]]></body></msg>\x00`;
+                const gameOverMsg = JSON.stringify({
+                    "t": "xt",
+                    "b": {
+                        "action": "xtRes",
+                        "r": -1,
+                        "o": {
+                            "_cmd": "gameOver",
+                            "winnerId": winnerId,
+                            "results": results
+                        }
+                    }
+                }) + '\x00';
 
                 broadcastToBattle(gameOverBattle.name, gameOverMsg);
 
@@ -1323,10 +2649,30 @@ function handleGameXtCommand(socket, command, params) {
                     updateUserStatus(socket.userId, 'online');
                 }
 
-                response = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"gameOver","winnerId":"${winnerId}","results":"${results}"}]]></body></msg>\x00`;
+                response = JSON.stringify({
+                    "t": "xt",
+                    "b": {
+                        "action": "xtRes",
+                        "r": -1,
+                        "o": {
+                            "_cmd": "gameOver",
+                            "winnerId": winnerId,
+                            "results": results
+                        }
+                    }
+                }) + '\x00';
             } else {
                 console.log(`[GAMEXT_LOG] gameOver failed - no active battle for user ${socket.userId}`);
-                response = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"gameError"}]]></body></msg>\x00`;
+                response = JSON.stringify({
+                    "t": "xt",
+                    "b": {
+                        "action": "xtRes",
+                        "r": -1,
+                        "o": {
+                            "_cmd": "gameError"
+                        }
+                    }
+                }) + '\x00';
             }
             break;
 
@@ -1337,18 +2683,183 @@ function handleGameXtCommand(socket, command, params) {
 
             if (destroyBattle) {
                 // Notify all players in the battle that the room is destroyed
-                const roomDestroyMsg = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"roomDestroyed"}]}</body></msg>\x00`;
+                const roomDestroyMsg = JSON.stringify({
+                    "t": "xt",
+                    "b": {
+                        "action": "xtRes",
+                        "r": -1,
+                        "o": {
+                            "_cmd": "roomDestroyed"
+                        }
+                    }
+                }) + '\x00';
 
                 broadcastToBattle(roomName, roomDestroyMsg);
 
                 // Clean up the battle room
                 delete battleRooms[roomName];
 
-                response = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"roomDestroyed","roomName":"${roomName}"}]]></body></msg>\x00`;
+                response = JSON.stringify({
+                    "t": "xt",
+                    "b": {
+                        "action": "xtRes",
+                        "r": -1,
+                        "o": {
+                            "_cmd": "roomDestroyed",
+                            "roomName": roomName
+                        }
+                    }
+                }) + '\x00';
             } else {
-                response = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"gameError"}]]></body></msg>\x00`;
+                response = JSON.stringify({
+                    "t": "xt",
+                    "b": {
+                        "action": "xtRes",
+                        "r": -1,
+                        "o": {
+                            "_cmd": "gameError"
+                        }
+                    }
+                }) + '\x00';
             }
             break;
+
+        case 'joinGameError':
+            // Send join game error response
+            response = JSON.stringify({
+                "t": "xt",
+                "b": {
+                    "action": "xtRes",
+                    "r": -1,
+                    "o": {
+                        "_cmd": "joinGameError",
+                        "errorMessage": "Unable to join game"
+                    }
+                }
+            }) + '\x00';
+            break;
+
+        case 'selectedNanovorError':
+            // Send selected nanovor error response
+            response = JSON.stringify({
+                "t": "xt",
+                "b": {
+                    "action": "xtRes",
+                    "r": -1,
+                    "o": {
+                        "_cmd": "selectedNanovorError",
+                        "errorMessage": "Error selecting nanovor"
+                    }
+                }
+            }) + '\x00';
+            break;
+
+        case 'systemError':
+            // Send system error response
+            response = JSON.stringify({
+                "t": "xt",
+                "b": {
+                    "action": "xtRes",
+                    "r": -1,
+                    "o": {
+                        "_cmd": "systemError",
+                        "errorMessage": "System error occurred"
+                    }
+                }
+            }) + '\x00';
+            break;
+
+        case 'allPlayersReady':
+            // Send all players ready notification
+            const allReadyBattle = socket.activeBattle ? battleRooms[socket.activeBattle] : null;
+            
+            if (allReadyBattle) {
+                const allReadyMsg = JSON.stringify({
+                    "t": "xt",
+                    "b": {
+                        "action": "xtRes",
+                        "r": -1,
+                        "o": {
+                            "_cmd": "allPlayersReady",
+                            "battleName": allReadyBattle.name
+                        }
+                    }
+                }) + '\x00';
+                
+                broadcastToBattle(allReadyBattle.name, allReadyMsg);
+                
+                response = JSON.stringify({
+                    "t": "xt",
+                    "b": {
+                        "action": "xtRes",
+                        "r": -1,
+                        "o": {
+                            "_cmd": "allPlayersReady",
+                            "battleName": allReadyBattle.name
+                        }
+                    }
+                }) + '\x00';
+            } else {
+                response = JSON.stringify({
+                    "t": "xt",
+                    "b": {
+                        "action": "xtRes",
+                        "r": -1,
+                        "o": {
+                            "_cmd": "gameError"
+                        }
+                    }
+                }) + '\x00';
+            }
+            break;
+
+        case 'setGameSwarmValueNotification':
+            // Send game swarm value set notification (different from response)
+            const swarmValueNotif = params.gameSwarmValue || 1000;
+            const swarmNotifBattle = socket.activeBattle ? battleRooms[socket.activeBattle] : null;
+            
+            if (swarmNotifBattle) {
+                const swarmNotifMsg = JSON.stringify({
+                    "t": "xt",
+                    "b": {
+                        "action": "xtRes",
+                        "r": -1,
+                        "o": {
+                            "_cmd": "setGameSwarmValue",
+                            "battleName": swarmNotifBattle.name,
+                            "gameSwarmValue": swarmValueNotif
+                        }
+                    }
+                }) + '\x00';
+                
+                broadcastToBattle(swarmNotifBattle.name, swarmNotifMsg);
+                
+                response = JSON.stringify({
+                    "t": "xt",
+                    "b": {
+                        "action": "xtRes",
+                        "r": -1,
+                        "o": {
+                            "_cmd": "setGameSwarmValue",
+                            "battleName": swarmNotifBattle.name,
+                            "gameSwarmValue": swarmValueNotif
+                        }
+                    }
+                }) + '\x00';
+            } else {
+                response = JSON.stringify({
+                    "t": "xt",
+                    "b": {
+                        "action": "xtRes",
+                        "r": -1,
+                        "o": {
+                            "_cmd": "gameError"
+                        }
+                    }
+                }) + '\x00';
+            }
+            break;
+
 
         default:
             // Log invalid gameXt command
@@ -1359,7 +2870,16 @@ function handleGameXtCommand(socket, command, params) {
                 userName: socket.userName,
                 playerId: socket.playerId
             });
-            response = `<msg t="xt"><body action="xtRes" r="-1"><![CDATA[{"_cmd":"unknownCommand"}]]></body></msg>\x00`;
+            response = JSON.stringify({
+                "t": "xt",
+                "b": {
+                    "action": "xtRes",
+                    "r": -1,
+                    "o": {
+                        "_cmd": "unknownCommand"
+                    }
+                }
+            }) + '\x00';
     }
 
     // Send response to the requesting client if we have one

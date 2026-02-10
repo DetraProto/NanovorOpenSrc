@@ -1,6 +1,6 @@
 const state = require('../../state');
 const user = require('../../user');
-const { updateUserStatus } = require('./buddyXt'); // Import the buddy status update function
+const { updateUserStatus } = require('./buddyListXt'); // Import the buddy status update function
 const debug = require('../../debug/Debug');
 const { users } = state;
 const { saveUserData } = user;
