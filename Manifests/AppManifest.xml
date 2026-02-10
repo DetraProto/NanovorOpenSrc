@@ -1,11 +1,131 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<AppManifest xmlns="http://127.0.0.1:8443/xsd/app-manifest/app-manifest.xsd">
+<AppManifest>
     <version>
         <major>1</major>
         <minor>2</minor>
         <build>0</build>
     </version>
-    <assets>
-        <!-- Placeholder for required assets -->
-    </assets>
+    <Files>
+        <File id="LoginPanel" filename="Client/LoginPanel.swf" CRC="22a9cf7e" />
+        <File id="HomeState" filename="Client/HomeState.swf" CRC="72b8bfb5" />
+        <File id="CollectionViewer" filename="Client/CollectionViewer.swf" CRC="7de51e69" />
+        <File id="EvoTreeState" filename="Client/EvoTreeState.swf" CRC="4f4b0cd8" />
+        <File id="NanoMall" filename="Client/NanoMall.swf" CRC="95ef6e9c" />
+        <File id="BattleState" filename="Client/BattleState.swf" CRC="a7f726dd" />
+        <File id="DeviceState" filename="Client/DeviceState.swf" CRC="f41919ae" />
+        <File id="ProfileManagerUI" filename="Client/ProfileManagerUI.swf" CRC="7fdf85d2" />
+        <File id="SenseiBattleState" filename="Client/SenseiBattleState.swf" CRC="8a70a41a" />
+        <File id="SenseiSelectState" filename="Client/SenseiSelectState.swf" CRC="53abd7e2" />
+        <File id="EvoGameState" filename="Client/EvoGameState.swf" CRC="a482e469" />
+        <File id="trade" filename="Client/trade.swf" CRC="9eb902a0" />
+        <File id="GameEngine" filename="Client/GameEngine.swf" CRC="67b4f142" />
+        <File id="Wrapper" filename="Client/Wrapper.swf" CRC="76c5f886" />
+        <File id="DownloadManager" filename="Client/DownloadManager.swf" CRC="a3cbdd51" />
+        <File id="HeaderWidget" filename="Client/HeaderWidget.swf" CRC="e4d8e8a1" />
+        <File id="AvatarWidget" filename="Client/AvatarWidget.swf" CRC="4c0d393c" />
+        <File id="ChatWidget" filename="Client/ChatWidget.swf" CRC="5353aeed" />
+        <File id="GenericTransition" filename="Client/GenericTransition.swf" CRC="6a665796" />
+        <File id="NanovorMegaViewer" filename="Client/NanovorMegaViewer.swf" CRC="ca37be4a" />
+        <File id="GameOver" filename="Client/GameOver.swf" CRC="8d18618b" />
+        <File id="EvoGameStateUI" filename="Client/EvoGameStateUI.swf" CRC="cbc4d84f" />
+        <File id="NewUserState" filename="Client/NewUserState.swf" CRC="583d494b" />
+        <File id="NanoBank" filename="Client/NanoBank.swf" CRC="5f20c10f" />
+        <File id="SwarmChooser" filename="Client/SwarmChooser.swf" CRC="7bac4701" />
+        <File id="DeviceSwarmChooser" filename="Client/DeviceSwarmChooser.swf" CRC="fe3640eb" />
+        <File id="emUnit" filename="Client/emUnit.swf" CRC="0ac85ea7" />
+        <File id="tradeUnit" filename="Client/tradeUnit.swf" CRC="0f648849" />
+        <File id="virmonUnit" filename="Client/virmonUnit.swf" CRC="7117d6e6" />
+        <File id="CollectionUnit" filename="Client/CollectionUnit.swf" CRC="124c9f3b" />
+        <File id="BattleCombatPanel" filename="Client/BattleCombatPanel.swf" CRC="d6016767" />
+        <File id="MoviePlayer" filename="Client/MoviePlayer.swf" CRC="73d415f4" />
+        <File id="virmonViewer" filename="Client/virmonViewer.swf" CRC="378581fb" />
+        <File id="AutoBattleWidget" filename="Client/AutoBattleWidget.swf" CRC="a676b011" />
+        <File id="MegaWidget" filename="Client/MegaWidget.swf" CRC="8a067c94" />
+        <File id="DeviceStateUI" filename="Client/DeviceStateUI.swf" CRC="1acf933c" />
+        <File id="Elements" filename="Client/Elements.swf" CRC="a3999823" />
+        <File id="FinalComponents" filename="Client/FinalComponents.swf" CRC="886fe5af" />
+        <File id="HelpComponents" filename="Client/HelpComponents.swf" CRC="23e1a17e" />
+        <File id="DebugLog" filename="Client/DebugLog.swf" CRC="2e5663b7" />
+    </Files>
+    <Packages>
+        <Package id="LoginState" priority="0">
+            <Dependencies>
+                <FileRef id="LoginPanel" />
+            </Dependencies>
+        </Package>
+        <Package id="HomeState" priority="0">
+            <Dependencies>
+                <FileRef id="HomeState" />
+            </Dependencies>
+        </Package>
+        <Package id="CollectionState" priority="0">
+            <Dependencies>
+                <FileRef id="CollectionViewer" />
+            </Dependencies>
+        </Package>
+        <Package id="EvoTreeState" priority="0">
+            <Dependencies>
+                <FileRef id="EvoTreeState" />
+            </Dependencies>
+        </Package>
+        <Package id="NanomallState" priority="0">
+            <Dependencies>
+                <FileRef id="NanoMall" />
+            </Dependencies>
+        </Package>
+        <Package id="BattleState" priority="0">
+            <Dependencies>
+                <FileRef id="BattleState" />
+            </Dependencies>
+        </Package>
+        <Package id="DeviceState" priority="0">
+            <Dependencies>
+                <FileRef id="DeviceState" />
+            </Dependencies>
+        </Package>
+        <Package id="ProfileState" priority="0">
+            <Dependencies>
+                <FileRef id="ProfileManagerUI" />
+            </Dependencies>
+        </Package>
+        <Package id="SenseiBattleState" priority="0">
+            <Dependencies>
+                <FileRef id="SenseiBattleState" />
+            </Dependencies>
+        </Package>
+        <Package id="SenseiSelectState" priority="0">
+            <Dependencies>
+                <FileRef id="SenseiSelectState" />
+            </Dependencies>
+        </Package>
+        <Package id="EvoGameState" priority="0">
+            <Dependencies>
+                <FileRef id="EvoGameState" />
+            </Dependencies>
+        </Package>
+        <Package id="TradeState" priority="0">
+            <Dependencies>
+                <FileRef id="trade" />
+            </Dependencies>
+        </Package>
+        <Package id="GameEngine" priority="0">
+            <Dependencies>
+                <FileRef id="GameEngine" />
+            </Dependencies>
+        </Package>
+        <Package id="Wrapper" priority="0">
+            <Dependencies>
+                <FileRef id="Wrapper" />
+            </Dependencies>
+        </Package>
+        <Package id="DownloadManager" priority="0">
+            <Dependencies>
+                <FileRef id="DownloadManager" />
+            </Dependencies>
+        </Package>
+        <Package id="None" priority="0">
+            <Dependencies>
+            </Dependencies>
+        </Package>
+    </Packages>
 </AppManifest>
