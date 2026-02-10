@@ -971,14 +971,16 @@ function handleGameXtCommand(socket, command, params) {
                 }) + '\x00';
                 console.log(`[GAMEXT_LOG] quitGame completed for user ${quittingUserId}`);
             } else {
-                console.log(`[GAMEXT_LOG] quitGame failed - no active battle for user ${socket.userId}`);
+                console.log(`[GAMEXT_LOG] quitGame - no active battle for user ${socket.userId}, sending confirmed`);
+                // Send confirmed response even if no battle was active, as the desired state is achieved
                 response = JSON.stringify({
                     "t": "xt",
                     "b": {
                         "action": "xtRes",
                         "r": -1,
                         "o": {
-                            "_cmd": "gameError"
+                            "_cmd": "quitGameConfirmed",
+                            "userRefId": quittingUserId
                         }
                     }
                 }) + '\x00';
@@ -1028,13 +1030,14 @@ function handleGameXtCommand(socket, command, params) {
                     }
                 }) + '\x00';
             } else {
+                // No active quick battle to cancel, but that's fine
                 response = JSON.stringify({
                     "t": "xt",
                     "b": {
                         "action": "xtRes",
                         "r": -1,
                         "o": {
-                            "_cmd": "gameError"
+                            "_cmd": "quickBattleCancelled"
                         }
                     }
                 }) + '\x00';
@@ -2590,13 +2593,16 @@ function handleGameXtCommand(socket, command, params) {
                     }
                 }) + '\x00';
             } else {
+                // No active battle, but that's fine - the desired state is achieved
                 response = JSON.stringify({
                     "t": "xt",
                     "b": {
                         "action": "xtRes",
                         "r": -1,
                         "o": {
-                            "_cmd": "gameError"
+                            "_cmd": "playerQuitConfirmed",
+                            "userRefId": quitUserId,
+                            "username": quitUsername
                         }
                     }
                 }) + '\x00';
